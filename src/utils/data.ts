@@ -38,3 +38,27 @@ export const sidebarItems:SidebarItem [] = [
     path: "/trash",
   },
 ];
+export const userTitles: string[] = [
+  "Web Developer",
+  "Frontend Developer",
+  "Backend Developer",
+  "Fullstack Developer",
+  "UI/UX Designer",
+  "Graphic Designer",
+  "Product Manager",
+  "Project Manager",
+  "Team Lead",
+  "Software Engineer",
+  "Mobile Developer",
+  "QA Engineer / Tester",
+  "Data Analyst",
+  "Data Scientist",
+  "DevOps Engineer",
+  "Content Creator",
+  "Marketing Specialist",
+  "Business Analyst",
+  "HR Manager",
+  "Student",
+  "Freelancer",
+  "Entrepreneur"
+];

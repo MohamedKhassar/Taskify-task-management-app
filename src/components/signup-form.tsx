@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label"
 import { Link } from "react-router-dom"
 import { Eye, EyeOff, Github } from "lucide-react"
 import { useState } from "react"
+import { SelectTitle } from "./SelectTitle"
 
-export function LoginForm({
+export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
@@ -25,8 +26,26 @@ export function LoginForm({
                   <h1 className="text-3xl font-bold text-sky-600">Taskify</h1>
                 </div>
                 <p className="text-muted-foreground text-balance">
-                  Login to your <b>Taskify</b> account
+                  Create your <b>Taskify</b> account
                 </p>
+              </div>
+              <div className="grid gap-3">
+                <Label
+                  className="text-sky-700"
+                  htmlFor="name">Full Name</Label>
+                <Input
+                  className="border-sky-600 focus:!ring-sky-500/40 focus:border-transparent"
+                  id="name"
+                  type="text"
+                  placeholder="John Doe"
+                  required
+                />
+              </div>
+              <div className="grid gap-3">
+                <Label
+                  className="text-sky-700"
+                  htmlFor="title">Title</Label>
+                <SelectTitle />
               </div>
               <div className="grid gap-3">
                 <Label
@@ -60,7 +79,7 @@ export function LoginForm({
                 </div>
               </div>
               <Button type="submit" className="w-full bg-sky-700 hover:bg-sky-800 duration-300">
-                Login
+                Signup
               </Button>
               <div className=" relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-sky-700">
                 <span className="bg-card relative z-10 px-2 text-sky-700">
@@ -75,17 +94,17 @@ export function LoginForm({
                       fill="currentColor"
                     />
                   </svg>
-                  <span className="sr-only">Login with Google</span>
+                  <span className="sr-only">Signup with Google</span>
                 </Button>
                 <Button variant="outline" type="button" className="w-full">
                   <Github className="size-5 fill-black" />
-                  <span className="sr-only">Login with Github</span>
+                  <span className="sr-only">Signup with Github</span>
                 </Button>
               </div>
               <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <Link to="/register" className="underline underline-offset-4">
-                  Sign up
+                Already have an account?{" "} 
+                <Link to="/login" className="underline underline-offset-4">
+                    Login
                 </Link>
               </div>
             </div>

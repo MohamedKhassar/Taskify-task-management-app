@@ -17,3 +17,6 @@ export type User = {
 }
 
 export type Theme = "dark" | "light" | "system";
+export type AuthButtonMood = {
+  mode?: "login" | "register"  // 👈 which page we are on
+}

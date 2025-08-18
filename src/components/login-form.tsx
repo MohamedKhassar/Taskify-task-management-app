@@ -4,21 +4,24 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Link } from "react-router-dom"
-import { Eye, EyeOff, Github } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
 import type { User } from "@/utils/types"
 import { ModeToggle } from "./mode-toggle"
+import { GoogleAuthButton } from "./ui/GoogleAuthButton"
+import { GithubAuthButton } from "./ui/GithubAuthButton"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const [showPassword, setShowPassword] = useState(false)
-  const [user,setUser]=useState<User>({
+  const [user, setUser] = useState<User>({
     email: "",
     password: ""
   })
-  console.log(user)
+
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <ModeToggle />
@@ -40,7 +43,7 @@ export function LoginForm({
                   className="text-sky-700"
                   htmlFor="email">Email</Label>
                 <Input
-                value={user.email}
+                  value={user.email}
                   onChange={(e) => setUser({ ...user, email: e.target.value })}
                   className="border-sky-600 focus:!ring-sky-500/40 focus:border-transparent"
                   id="email"
@@ -61,7 +64,7 @@ export function LoginForm({
                     onChange={(e) => setUser({ ...user, password: e.target.value })}
                     className="border-sky-600 focus:!ring-sky-500/40 focus:border-transparent"
                     id="password" type={showPassword ? "text" : "password"} required />
-                  <Button type="button" variant={"link"} onClick={() => setShowPassword(prev=>!prev)} className="absolute right-0 cursor-pointer z-50 focus:!ring-0">
+                  <Button type="button" variant={"link"} onClick={() => setShowPassword(prev => !prev)} className="absolute right-0 cursor-pointer z-50 focus:!ring-0">
                     {showPassword ?
                       <EyeOff className="size-4.5 text-sky-900" />
                       :
@@ -79,19 +82,8 @@ export function LoginForm({
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <Button variant="outline" type="button" className="w-full">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path
-                      d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  <span className="sr-only">Login with Google</span>
-                </Button>
-                <Button variant="outline" type="button" className="w-full">
-                  <Github className="size-5 fill-black" />
-                  <span className="sr-only">Login with Github</span>
-                </Button>
+                <GoogleAuthButton mode="login" />
+                <GithubAuthButton />
               </div>
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}

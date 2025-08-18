@@ -5,7 +5,7 @@ import { sidebarItems } from "../utils/data"
 const Sidebar = () => {
     const { pathname } = useLocation()
     return (
-        <aside className="h-screen  w-80 sticky top-0 py-10 px-6 bg-white space-y-15">
+        <aside className="h-screen  w-80 sticky top-0 py-10 px-6 dark:bg-muted space-y-15">
             <Link to="/dashboard" className="flex items-center text-center gap-2">
                 <img src="/imgs/logo.png" alt="Logo" className="size-8" />
                 <h1 className="text-2xl font-bold text-sky-600">Taskify</h1>

@@ -1,55 +1,48 @@
-
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { userTitles } from "@/utils/data"
-import { Input } from "./ui/input"
+import { Button } from "@/components/ui/button"
 import { useState } from "react"
+import { userTitles } from "@/utils/data"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "./ui/command"
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
+import { Check } from "lucide-react"
+import { cn } from "@/utils/cn"
 
-export function SelectTitle() {
-    const [search, setSearch] = useState("")
-
-    const filteredTitles = userTitles.filter((title) =>
-        title.toLowerCase().includes(search.toLowerCase())
-    )
+export function SearchableSelect({ selectedTitle, setSelectedTitle }: { selectedTitle?: string, setSelectedTitle: (value: string) => void }) {
+    const [open, setOpen] = useState(false)
     return (
-        <Select>
-            <SelectTrigger className="w-full border-sky-600">
-                <SelectValue placeholder="Select your title" />
-            </SelectTrigger>
-
-            <SelectContent className="space-y-2">
-                {/* Search input */}
-                <div className="px-2">
-                    <Input
-                        type="search"
-                        placeholder="Search title..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="border-sky-600 my-2 w-full"
-                    />
-                </div>
-
-                {/* Filtered list */}
-                <SelectGroup className="max-h-48 overflow-y-auto focus:!ring-sky-500">
-                    {filteredTitles.length > 0 ? (
-                        filteredTitles.map((title) => (
-                            <SelectItem key={title} value={title}>
+        <Popover open={open} onOpenChange={setOpen} modal={false}>
+            <PopoverTrigger asChild>
+                <Button variant="outline" className="!border-sky-600 justify-between">
+                    {selectedTitle || "Select your title"}
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="max-h-48 overflow-y-auto shadow-2xl">
+                <Command>
+                    <CommandInput placeholder="Search title..." />
+                    <CommandEmpty>No results found.</CommandEmpty>
+                    <CommandGroup>
+                        {userTitles.map((title) => (
+                            <CommandItem
+                                key={title}
+                                onSelect={() => {
+                                    setSelectedTitle(title)
+                                    setOpen(false)
+                                    console.log(title)
+                                }}
+                                className={cn("cursor-pointer flex justify-between items-center my-1",
+                                    selectedTitle === title && "bg-accent"
+                                )}
+                            >
                                 {title}
-                            </SelectItem>
-                        ))
-                    ) : (
-                        <p className="text-center text-xs text-gray-500 py-2">
-                            No results found
-                        </p>
-                    )}
-                </SelectGroup>
-            </SelectContent>
-        </Select>
+                                {
+                                    selectedTitle === title && (
+                                        <Check />
+                                    )
+                                }
+                            </CommandItem>
+                        ))}
+                    </CommandGroup>
+                </Command>
+            </PopoverContent>
+        </Popover>
     )
 }

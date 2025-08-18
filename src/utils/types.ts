@@ -7,3 +7,13 @@ export type SidebarItem = {
   >;
   path: string;
 };
+
+export type User = {
+  id?: string;
+  name?: string;
+  email: string;
+  title?: string;
+  password:string;
+}
+
+export type Theme = "dark" | "light" | "system";

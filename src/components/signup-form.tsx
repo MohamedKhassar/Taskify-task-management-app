@@ -6,16 +6,25 @@ import { Label } from "@/components/ui/label"
 import { Link } from "react-router-dom"
 import { Eye, EyeOff, Github } from "lucide-react"
 import { useState } from "react"
-import { SelectTitle } from "./SelectTitle"
+import { SearchableSelect } from "./SelectTitle"
+import { type User } from "@/utils/types"
+import { ModeToggle } from "./mode-toggle"
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const [showPassword, setShowPassword] = useState(false)
-  console.log(showPassword)
+  const [user, setUser] = useState<User>({
+    name: "",
+    title: "",
+    email: "",
+    password: ""
+  })
+  console.log(user)
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <ModeToggle />
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form className="p-6 md:p-8">
@@ -34,6 +43,8 @@ export function SignupForm({
                   className="text-sky-700"
                   htmlFor="name">Full Name</Label>
                 <Input
+                  value={user.name}
+                  onChange={(e) => setUser({ ...user, name: e.target.value })}
                   className="border-sky-600 focus:!ring-sky-500/40 focus:border-transparent"
                   id="name"
                   type="text"
@@ -45,13 +56,15 @@ export function SignupForm({
                 <Label
                   className="text-sky-700"
                   htmlFor="title">Title</Label>
-                <SelectTitle />
+                <SearchableSelect selectedTitle={user.title} setSelectedTitle={(value) => setUser({ ...user, title: value })} />
               </div>
               <div className="grid gap-3">
                 <Label
                   className="text-sky-700"
                   htmlFor="email">Email</Label>
                 <Input
+                  value={user.email}
+                  onChange={(e) => setUser({ ...user, email: e.target.value })}
                   className="border-sky-600 focus:!ring-sky-500/40 focus:border-transparent"
                   id="email"
                   type="email"
@@ -67,9 +80,11 @@ export function SignupForm({
                 </div>
                 <div className="relative flex items-center">
                   <Input
+                    value={user.password}
+                    onChange={(e) => setUser({ ...user, password: e.target.value })}
                     className="border-sky-600 focus:!ring-sky-500/40 focus:border-transparent"
                     id="password" type={showPassword ? "text" : "password"} required />
-                  <Button type="button" variant={"link"} onClick={() => setShowPassword(prev=>!prev)} className="absolute right-0 cursor-pointer z-50 focus:!ring-0">
+                  <Button type="button" variant={"link"} onClick={() => setShowPassword(prev => !prev)} className="absolute right-0 cursor-pointer z-50 focus:!ring-0">
                     {showPassword ?
                       <EyeOff className="size-4.5 text-sky-900" />
                       :
@@ -102,9 +117,9 @@ export function SignupForm({
                 </Button>
               </div>
               <div className="text-center text-sm">
-                Already have an account?{" "} 
+                Already have an account?{" "}
                 <Link to="/login" className="underline underline-offset-4">
-                    Login
+                  Login
                 </Link>
               </div>
             </div>
@@ -113,7 +128,7 @@ export function SignupForm({
             <img
               src="https://images.unsplash.com/photo-1611224885990-ab7363d1f2a9?q=80&w=1039&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.7]"
             />
           </div>
         </CardContent>

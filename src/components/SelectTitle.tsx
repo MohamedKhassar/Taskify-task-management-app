@@ -9,7 +9,7 @@ import { cn } from "@/utils/cn"
 export function SearchableSelect({ selectedTitle, setSelectedTitle }: { selectedTitle?: string, setSelectedTitle: (value: string) => void }) {
     const [open, setOpen] = useState(false)
     return (
-        <Popover open={open} onOpenChange={setOpen} modal={false}>
+        <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button variant="outline" className="!border-sky-600 justify-between">
                     {selectedTitle || "Select your title"}

@@ -20,3 +20,8 @@ export type Theme = "dark" | "light" | "system";
 export type AuthButtonMood = {
   mode?: "login" | "register"  // 👈 which page we are on
 }
+
+export interface ApiErrorResponse {
+  errors?: string[];
+  message?: string;
+}

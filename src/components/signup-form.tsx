@@ -4,17 +4,24 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Link } from "react-router-dom"
-import { Eye, EyeOff, Github } from "lucide-react"
-import { useState } from "react"
+import { Eye, EyeOff, Github, Loader2 } from "lucide-react"
+import { useState, type FormEvent } from "react"
 import { SearchableSelect } from "./SelectTitle"
 import { type User } from "@/utils/types"
 import { ModeToggle } from "./mode-toggle"
 import { GoogleAuthButton } from "./ui/GoogleAuthButton"
+import type { AppDispatch, RootState } from "@/store"
+import { useAppDispatch, useAppSelector } from "@/hooks/redux"
+import { signupUser } from "@/slice/authSlice"
+
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+
+  const dispatch = useAppDispatch<AppDispatch>();
+  const auth = useAppSelector((state: RootState) => state.auth);
   const [showPassword, setShowPassword] = useState(false)
   const [user, setUser] = useState<User>({
     name: "",
@@ -22,13 +29,24 @@ export function SignupForm({
     email: "",
     password: ""
   })
-  console.log(user)
+
+  const handleSignup = async (e: FormEvent) => {
+    e.preventDefault();
+    dispatch(signupUser(user));
+  };
+  console.log(auth)
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <ModeToggle />
       <Card className="overflow-hidden p-0">
-        <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+        <CardContent className="grid p-0 md:grid-cols-2 relative">
+          {
+            auth.loading &&
+            <div className="bg-black/10 flex justify-center items-center backdrop-blur-xs h-full absolute inset-0 z-40 w-1/2">
+              <Loader2 className="animate-spin size-30 text-sky-600" />
+            </div>
+          }
+          <form onSubmit={handleSignup} className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center gap-2">
                 <div className="flex items-center text-center gap-2 justify-center">
@@ -52,12 +70,25 @@ export function SignupForm({
                   placeholder="John Doe"
                   required
                 />
+                {
+                  auth.error?.toLocaleLowerCase()?.includes("name") &&
+                  <p className="text-sm text-red-600 mt-1 ml-1 font-medium capitalize">
+                    {auth.error}
+                  </p>
+                }
+
               </div>
               <div className="grid gap-3">
                 <Label
                   className="text-sky-700"
                   htmlFor="title">Title</Label>
                 <SearchableSelect selectedTitle={user.title} setSelectedTitle={(value) => setUser({ ...user, title: value })} />
+                  {
+                  auth.error?.toLocaleLowerCase()?.includes("title") &&
+                  <p className="text-sm text-red-600 mt-1 ml-1 font-medium capitalize">
+                    {auth.error}
+                  </p>
+                }
               </div>
               <div className="grid gap-3">
                 <Label
@@ -72,6 +103,12 @@ export function SignupForm({
                   placeholder="m@example.com"
                   required
                 />
+                {
+                  auth.error?.toLocaleLowerCase()?.includes("email") &&
+                  <p className="text-sm text-red-600 mt-1 ml-1 font-medium capitalize">
+                    {auth.error}
+                  </p>
+                }
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
@@ -93,6 +130,12 @@ export function SignupForm({
                     }
                   </Button>
                 </div>
+                {
+                  auth.error?.toLocaleLowerCase()?.includes("password") &&
+                  <small className="text-xs text-red-600 mt-1 ml-1 font capitalize-medium">
+                    {auth.error}
+                  </small>
+                }
               </div>
               <Button type="submit" className="w-full bg-sky-700 hover:bg-sky-800 duration-300">
                 Signup

@@ -11,15 +11,17 @@ export function SearchableSelect({ selectedTitle, setSelectedTitle }: { selected
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <Button variant="outline" className="!border-sky-600 justify-between">
+                <Button variant="outline" className={cn("!border-sky-600 justify-between",
+                    selectedTitle?"text-white":"text-gray-400"
+                )}>
                     {selectedTitle || "Select your title"}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent align="start" className="max-h-48 overflow-y-auto shadow-2xl">
+            <PopoverContent align="start" className="shadow-2xl">
                 <Command>
                     <CommandInput placeholder="Search title..." />
                     <CommandEmpty>No results found.</CommandEmpty>
-                    <CommandGroup>
+                    <CommandGroup className="max-h-54 overflow-y-scroll scrollbar scrollbar-track-slate-50 scrollbar-thumb-sky-900 ">
                         {userTitles.map((title) => (
                             <CommandItem
                                 key={title}
@@ -28,7 +30,7 @@ export function SearchableSelect({ selectedTitle, setSelectedTitle }: { selected
                                     setOpen(false)
                                     console.log(title)
                                 }}
-                                className={cn("cursor-pointer flex justify-between items-center my-1",
+                                className={cn("cursor-pointer flex justify-between items-center my-2 p-2",
                                     selectedTitle === title && "bg-accent"
                                 )}
                             >

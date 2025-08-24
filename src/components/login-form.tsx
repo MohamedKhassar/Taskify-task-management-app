@@ -5,29 +5,76 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Link } from "react-router-dom"
 import { Eye, EyeOff } from "lucide-react"
-import { useState } from "react"
+import { useState, type FormEvent } from "react"
 import type { User } from "@/utils/types"
 import { ModeToggle } from "./mode-toggle"
 import { GoogleAuthButton } from "./ui/GoogleAuthButton"
 import { GithubAuthButton } from "./ui/GithubAuthButton"
+import { useAppDispatch, useAppSelector } from "@/hooks/redux"
+import { loginUser } from "@/slice/authSlice"
+import { Bounce, toast, ToastContainer } from "react-toastify"
+import { AnimatePresence, motion } from "framer-motion"
+import type { RootState } from "@/store"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const auth = useAppSelector((state: RootState) => state.auth)
   const [showPassword, setShowPassword] = useState(false)
   const [user, setUser] = useState<User>({
     email: "",
     password: ""
   })
+  const dispatch = useAppDispatch()
+  const handleLogin = async (e: FormEvent) => {
+    try {
+      e.preventDefault()
+      const res = await dispatch(loginUser(user)).unwrap(); // wait for backend response
 
+      toast.success(res.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
+
+      setUser({
+        email: "",
+        password: "",
+        name: "",
+        title: ""
+      });
+
+    } catch (err) {
+      console.log(err)
+    }
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        transition={Bounce}
+      />
       <ModeToggle />
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form onSubmit={handleLogin} className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center gap-2">
                 <div className="flex items-center text-center gap-2 justify-center">
@@ -51,6 +98,19 @@ export function LoginForm({
                   placeholder="m@example.com"
                   required
                 />
+                <AnimatePresence>
+                  {
+                    auth.error?.toLocaleLowerCase()?.includes("email") &&
+                    <motion.small
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: .3 }}
+                      className="text-xs text-red-600 mt-1 ml-1 capitalize font-medium">
+                      {auth.error}
+                    </motion.small>
+                  }
+                </AnimatePresence>
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
@@ -71,6 +131,19 @@ export function LoginForm({
                       <Eye className="size-4.5 text-sky-900" />
                     }
                   </Button>
+                  <AnimatePresence>
+                    {
+                      auth.error && ["email"].some(field => auth.error?.toLowerCase().includes(field)) &&
+                      <motion.small
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: .3 }}
+                        className="text-xs text-red-600 mt-1 ml-1 capitalize font-medium">
+                        {auth.error}
+                      </motion.small>
+                    }
+                  </AnimatePresence>
                 </div>
               </div>
               <Button type="submit" className="w-full bg-sky-700 hover:bg-sky-800 duration-300">

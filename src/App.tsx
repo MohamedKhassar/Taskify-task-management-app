@@ -1,9 +1,19 @@
-import { Navigate, Route, Routes } from "react-router-dom"
+import { Navigate, Route, Routes, useLocation } from "react-router-dom"
 import Layout from "./layout/Layout"
 import Login from "./pages/Login"
 import Register from "./pages/Register"
 import { ThemeProvider } from "./Providers/theme-provider"
+import { useAppDispatch } from "./hooks/redux"
+import { useEffect } from "react"
+import { clearError } from "./slice/authSlice"
 const App = () => {
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    // whenever route changes, reset error
+    dispatch(clearError());
+  }, [location, dispatch]);
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <Routes>

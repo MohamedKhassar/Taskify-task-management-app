@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Link } from "react-router-dom"
-import { Eye, EyeOff } from "lucide-react"
+import { Link, useNavigate } from "react-router-dom"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { useState, type FormEvent } from "react"
 import type { User } from "@/utils/types"
 import { ModeToggle } from "./mode-toggle"
@@ -26,7 +26,11 @@ export function LoginForm({
     email: "",
     password: ""
   })
+  const nav = useNavigate()
   const dispatch = useAppDispatch()
+
+
+
   const handleLogin = async (e: FormEvent) => {
     try {
       e.preventDefault()
@@ -50,7 +54,7 @@ export function LoginForm({
         name: "",
         title: ""
       });
-
+      nav("/dashboard")
     } catch (err) {
       console.log(err)
     }
@@ -74,6 +78,12 @@ export function LoginForm({
       <ModeToggle />
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
+          {
+            auth.loading &&
+            <div className="bg-black/10 flex justify-center items-center backdrop-blur-xs h-full absolute inset-0 z-40 w-1/2">
+              <Loader2 className="animate-spin size-30 text-sky-600" />
+            </div>
+          }
           <form onSubmit={handleLogin} className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center gap-2">
@@ -131,20 +141,20 @@ export function LoginForm({
                       <Eye className="size-4.5 text-sky-900" />
                     }
                   </Button>
-                  <AnimatePresence>
-                    {
-                      auth.error && ["email"].some(field => auth.error?.toLowerCase().includes(field)) &&
-                      <motion.small
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: .3 }}
-                        className="text-xs text-red-600 mt-1 ml-1 capitalize font-medium">
-                        {auth.error}
-                      </motion.small>
-                    }
-                  </AnimatePresence>
                 </div>
+                <AnimatePresence>
+                  {
+                    auth.error && !["email"].some(field => auth.error?.toLowerCase().includes(field)) &&
+                    <motion.small
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: .3 }}
+                      className="text-xs text-red-600 mt-1 ml-1 capitalize font-medium">
+                      {auth.error}
+                    </motion.small>
+                  }
+                </AnimatePresence>
               </div>
               <Button type="submit" className="w-full bg-sky-700 hover:bg-sky-800 duration-300">
                 Login

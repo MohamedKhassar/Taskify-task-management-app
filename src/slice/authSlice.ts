@@ -8,7 +8,7 @@ import { type User, type ApiErrorResponse } from "@/utils/types";
 
 // Define your state
 interface AuthState {
-  message:string|null
+  message: string | null;
   user: User | null;
   token: string | null;
   loading: boolean;
@@ -16,7 +16,7 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  message:null,
+  message: null,
   user: null,
   token: null,
   loading: false,
@@ -54,7 +54,12 @@ export const loginUser = createAsyncThunk<
   try {
     const response = await axios.post(
       `${import.meta.env.VITE_API_BASE_URL}/auth/login`,
-      credentials
+      credentials,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
     );
     return response.data; // { user, token, message }
   } catch (err) {
@@ -71,6 +76,16 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    loadUserFromStorage: (state) => {
+      const user = localStorage.getItem("user");
+      const token = localStorage.getItem("user");
+      if (user&&token) {
+        const parsedUser = JSON.parse(user);
+        const parsedToken = JSON.parse(token);
+        state.user = parsedUser || null;
+        state.token = parsedToken || null;
+      }
+    },
     logout(state) {
       state.user = null;
       state.token = null;
@@ -91,11 +106,14 @@ const authSlice = createSlice({
     });
     builder.addCase(
       signupUser.fulfilled,
-      (state, action: PayloadAction<{ user: User; token: string;message:string }>) => {
+      (
+        state,
+        action: PayloadAction<{ user: User; token: string; message: string }>
+      ) => {
         state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
-        state.message=action.payload.message
+        state.message = action.payload.message;
         localStorage.setItem("token", action.payload.token);
         localStorage.setItem("user", JSON.stringify(action.payload.user));
       }
@@ -114,7 +132,10 @@ const authSlice = createSlice({
     });
     builder.addCase(
       loginUser.fulfilled,
-      (state, action: PayloadAction<{ user: User; token: string ,message:string}>) => {
+      (
+        state,
+        action: PayloadAction<{ user: User; token: string; message: string }>
+      ) => {
         state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
@@ -130,5 +151,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout,clearError } = authSlice.actions;
+export const { logout, clearError,loadUserFromStorage } = authSlice.actions;
 export default authSlice.reducer;

@@ -4,7 +4,7 @@ import { userTitles } from "@/utils/data"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "./ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { Check } from "lucide-react"
-import { cn } from "@/utils/cn"
+import { cn } from "@/lib/utils"
 
 export function SearchableSelect({ selectedTitle, setSelectedTitle }: { selectedTitle?: string, setSelectedTitle: (value: string) => void }) {
     const [open, setOpen] = useState(false)
@@ -12,7 +12,7 @@ export function SearchableSelect({ selectedTitle, setSelectedTitle }: { selected
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button variant="outline" className={cn("!border-sky-600 justify-between",
-                    selectedTitle?"text-white":"text-gray-400"
+                    selectedTitle?"dark:text-white":"text-gray-400"
                 )}>
                     {selectedTitle || "Select your title"}
                 </Button>
@@ -28,7 +28,6 @@ export function SearchableSelect({ selectedTitle, setSelectedTitle }: { selected
                                 onSelect={() => {
                                     setSelectedTitle(title)
                                     setOpen(false)
-                                    console.log(title)
                                 }}
                                 className={cn("cursor-pointer flex justify-between items-center my-2 p-2",
                                     selectedTitle === title && "bg-accent"

@@ -4,12 +4,11 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Link } from "react-router-dom"
-import { Eye, EyeOff, Github, Loader2 } from "lucide-react"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { useState, type FormEvent } from "react"
 import { SearchableSelect } from "./SelectTitle"
 import { type User } from "@/utils/types"
 import { ModeToggle } from "./mode-toggle"
-import { GoogleAuthButton } from "./ui/GoogleAuthButton"
 import type { AppDispatch, RootState } from "@/store"
 import { useAppDispatch, useAppSelector } from "@/hooks/redux"
 import { signupUser } from "@/slice/authSlice"
@@ -208,18 +207,6 @@ export function SignupForm({
               <Button type="submit" className="w-full bg-sky-700 hover:bg-sky-800 duration-300">
                 Signup
               </Button>
-              <div className=" relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-sky-700">
-                <span className="bg-card relative z-10 px-2 text-sky-700 dark:text-sky-400">
-                  Or continue with
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <GoogleAuthButton mode="register" />
-                <Button variant="outline" type="button" className="w-full">
-                  <Github className="size-5 fill-black" />
-                  <span className="sr-only">Signup with Github</span>
-                </Button>
-              </div>
               <div className="text-center text-sm">
                 Already have an account?{" "}
                 <Link to="/login" className="underline underline-offset-4">

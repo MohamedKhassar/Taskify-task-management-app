@@ -8,8 +8,6 @@ import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { useState, type FormEvent } from "react"
 import type { User } from "@/utils/types"
 import { ModeToggle } from "./mode-toggle"
-import { GoogleAuthButton } from "./ui/GoogleAuthButton"
-import { GithubAuthButton } from "./ui/GithubAuthButton"
 import { useAppDispatch, useAppSelector } from "@/hooks/redux"
 import { loginUser } from "@/slice/authSlice"
 import { Bounce, toast, ToastContainer } from "react-toastify"
@@ -163,10 +161,6 @@ export function LoginForm({
                 <span className="bg-card relative z-10 px-2 text-sky-700">
                   Or continue with
                 </span>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <GoogleAuthButton mode="login" />
-                <GithubAuthButton />
               </div>
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}

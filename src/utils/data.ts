@@ -5,7 +5,7 @@ export const sidebarItems:SidebarItem [] = [
   {
     label: "Dashboard",
     Icon: LayoutDashboard,
-    path: "/",
+    path: "",
   },
   {
     label: "Tasks",

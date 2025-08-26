@@ -6,6 +6,7 @@ import { ThemeProvider } from "./Providers/theme-provider";
 import { useAppDispatch, useAppSelector } from "./hooks/redux";
 import { useEffect } from "react";
 import { clearError, loadUserFromStorage } from "./slice/authSlice";
+import Dashboard from "./components/Dashboard";
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -25,7 +26,7 @@ const App = () => {
           // Routes when logged in
           <Route element={<Layout />}>
             <Route path="/dashboard">
-              <Route index element={<h1>{user.name}</h1>} />
+              <Route index element={<Dashboard />} />
               <Route path="tasks">
                 <Route index element={<h1>tasks</h1>} />
                 <Route path="completed" element={<h1>completed</h1>} />
@@ -37,8 +38,8 @@ const App = () => {
             </Route>
 
             {/* Block access to auth pages */}
-            <Route path="/login" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/register" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/login" element={<Navigate to="/dashboard" />} />
+            <Route path="/register" element={<Navigate to="/dashboard" />} />
           </Route>
         ) : (
           // Routes when not logged in
@@ -47,7 +48,7 @@ const App = () => {
             <Route path="/register" element={<Register />} />
 
             {/* Block access to dashboard */}
-            <Route path="/dashboard/*" element={<Navigate to="/login" replace />} />
+            <Route path="/dashboard/*" element={<Navigate to="/login" />} />
           </>
         )}
 
@@ -55,7 +56,7 @@ const App = () => {
         <Route
           path="/"
           element={
-            <Navigate to={user ? "/dashboard" : "/login"} replace />
+            <Navigate to={user ? "/dashboard" : "/login"} />
           }
         />
       </Routes>

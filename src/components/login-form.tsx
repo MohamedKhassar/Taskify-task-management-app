@@ -75,11 +75,11 @@ export function LoginForm({
       />
       <ModeToggle />
       <Card className="overflow-hidden p-0">
-        <CardContent className="grid p-0 md:grid-cols-2">
+        <CardContent className="grid p-0 md:grid-cols-2 relative">
           {
             auth.loading &&
-            <div className="bg-black/10 flex justify-center items-center backdrop-blur-xs h-full absolute inset-0 z-40 w-1/2">
-              <Loader2 className="animate-spin size-30 text-sky-600" />
+            <div className="bg-black/10 flex justify-center items-center backdrop-blur-xs h-full absolute inset-0 z-40 md:w-1/2 w-full">
+              <Loader2 className="animate-spin size-10 text-sky-600" />
             </div>
           }
           <form onSubmit={handleLogin} className="p-6 md:p-8">

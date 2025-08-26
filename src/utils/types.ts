@@ -14,6 +14,7 @@ export type User = {
   email: string;
   title?: string;
   password:string;
+  avatar?:string
 }
 
 export type Theme = "dark" | "light" | "system";

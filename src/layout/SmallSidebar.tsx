@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, SidebarOpen, X } from "lucide-react"
+import { SidebarOpen } from "lucide-react"
 import { sidebarItems } from "../utils/data"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"

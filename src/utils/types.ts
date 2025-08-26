@@ -26,3 +26,11 @@ export interface ApiErrorResponse {
   errors?: string[];
   message?: string;
 }
+
+export interface AuthState {
+  message: string | null;
+  user: User | null;
+  token: string | null;
+  loading: boolean;
+  error: string | null;
+}

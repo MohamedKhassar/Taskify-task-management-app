@@ -4,18 +4,10 @@ import {
   type PayloadAction,
 } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
-import { type User, type ApiErrorResponse } from "@/utils/types";
+import { type User, type ApiErrorResponse, type AuthState } from "@/utils/types";
 import Cookies from "js-cookie";
 
 // Define your state
-interface AuthState {
-  message: string | null;
-  user: User | null;
-  token: string | null;
-  loading: boolean;
-  error: string | null;
-}
-
 const initialState: AuthState = {
   message: null,
   user: null,

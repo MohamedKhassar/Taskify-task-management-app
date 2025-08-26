@@ -1,12 +1,8 @@
 import { useEffect } from "react";
 
-interface PageTitleProps {
-  title: string;
-}
-
-const PageTitle = ({ title }: PageTitleProps) => {
+const PageTitle = ({ title }: { title: string }) => {
   useEffect(() => {
-    document.title = `${title} | Taskify`; // Add your app name here
+    document.title = title ? `${title} | Taskify` : "Taskify"; // Add your app name here
   }, [title]);
 
   return null; // this component only sets the title, nothing to render

@@ -15,7 +15,7 @@ const SmallSidebar = () => {
       {/* Toggle Button */}
       <Button
         onClick={() => setIsOpen(true)}
-        className="p-2 z-50 dark:bg-sky-800 dark:text-sky-200 rounded-l-none fixed top-8"
+        className="p-2 z-50 dark:bg-sky-800 bg-sky-200 text-sky-800 dark:text-sky-200 rounded-l-none fixed top-8"
       >
         <SidebarOpen className="size-6" />
       </Button>

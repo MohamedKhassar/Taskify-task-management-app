@@ -19,7 +19,7 @@ const Navbar = () => {
 
   return (
     <>
-      <header className="w-full md:px-6 px-4 py-3 flex items-center justify-end gap-4">
+      <header className="w-full py-3 flex items-center justify-end gap-4">
         {/* Theme toggle */}
         <ModeToggle className="!static" />
 
@@ -48,7 +48,7 @@ const Navbar = () => {
         {/* User Dropdown */}
         <nav>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild className="rounded-full size-12 cursor-pointer hover:ring-2 hover:!ring-sky-500/70 duration-300">
+            <DropdownMenuTrigger asChild className="rounded-full md:size-12 size-9 cursor-pointer hover:ring-2 hover:!ring-sky-500/70 duration-300">
               <img src={user?.avatar + "&size=300"} alt="" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="dark:!bg-body bg-white">

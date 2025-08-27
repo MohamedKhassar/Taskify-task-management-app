@@ -34,3 +34,22 @@ export interface AuthState {
   loading: boolean;
   error: string | null;
 }
+
+export interface Task {
+  _id?: string;
+  title: string;
+  description?: string;
+  status: "todo" | "in-progress" | "completed";
+  priority: "low" | "medium" | "high";
+  assignedTo?: string;
+  dueDate?: string;
+  tags?: string[];
+  createdBy?: string;
+  createdAt:Date
+}
+
+export interface TaskState {
+  tasks: Task[];
+  loading: boolean;
+  error: string | null;
+}

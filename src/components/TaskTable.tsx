@@ -27,7 +27,7 @@ export default function TaskTable({ tasks }: { tasks: Task[] }) {
         }
     }
     return (
-        <div className="border rounded-xl overflow-auto xl:max-h-185 md:max-h-185 max-h-200  scrollbar scrollbar-track-slate-50 scrollbar-thumb-sky-900 h-fit">
+        <div className="border rounded-xl overflow-auto xl:max-h-185 md:max-h-160 max-h-170  scrollbar scrollbar-track-slate-50 scrollbar-thumb-sky-900 h-fit">
             <Table>
                 <TableHeader className="bg-accent">
                     <TableRow>

@@ -16,7 +16,6 @@ const App = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const { user } = useAppSelector((state) => state.auth);
-  console.log(user)
   useEffect(() => {
     dispatch(clearError());
     dispatch(loadUserFromStorage());

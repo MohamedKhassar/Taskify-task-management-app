@@ -9,149 +9,146 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { useAppSelector } from "@/hooks/redux";
 import { cn } from "@/lib/utils";
-import type { RootState } from "@/store";
+import { taskColumns } from "@/utils/data";
+import type { Task } from "@/utils/types";
 import type { CheckedState } from "@radix-ui/react-checkbox";
 import { useState } from "react";
 
-export default function TaskTable() {
-    const data = useAppSelector((state: RootState) => state.tasks)
+export default function TaskTable({ tasks }: { tasks: Task[] }) {
     const [selectedItems, setSelectedItems] = useState<string[]>([])
-    const taskColumns = [
-        { key: "title", label: "Title" },
-        { key: "status", label: "Status" },
-        { key: "priority", label: "Priority" },
-        { key: "assignedTo", label: "Assigned To" },
-        { key: "dueDate", label: "Due Date" },
-        { key: "createdAt", label: "Created At" },
-        { key: "actions", label: "Actions" },
-    ];
+
 
     const selectAll = (checked: CheckedState) => {
         if (checked) {
-            setSelectedItems(data.tasks.map(item => item._id!))
+            setSelectedItems(tasks.map(item => item._id!))
         } else {
             setSelectedItems([])
         }
     }
-    console.log(selectedItems)
     return (
-        <Table>
-            <TableHeader>
-                <TableRow>
-                    {taskColumns.map((col) => (
-                        <TableHead align="center" key={col.key} className="!p-2">
-                            {col.label === "Title" && <Checkbox checked={data.tasks.length > 0 && selectedItems.length === data.tasks.length} onCheckedChange={(checked) => selectAll(checked)} id={col.key} className="mx-2" />}
-                            <Label htmlFor={col.key} className="inline text-sm sm:text-base">
-                                {col.label}
-                            </Label>
+        <div className="border rounded-xl overflow-auto xl:max-h-185 md:max-h-185 max-h-200  scrollbar scrollbar-track-slate-50 scrollbar-thumb-sky-900 h-fit">
+            <Table>
+                <TableHeader className="bg-accent">
+                    <TableRow>
+                        <TableHead align="center">
+                            <Checkbox checked={tasks.length > 0 && selectedItems.length === tasks.length} onCheckedChange={(checked) => selectAll(checked)} />
                         </TableHead>
-                    ))}
-                </TableRow>
-            </TableHeader>
-            <TableBody className="max-h-60 overflow-y-auto">
-                {data.tasks.length > 0 ? (
-                    data.tasks.map((task) => (
-                        <TableRow
-                            key={task._id}
-                        >
-                            {/* Title */}
-                            <TableCell className="py-6 px-10 gap-2 flex justify-start items-center">
-                                <Checkbox
-                                    checked={selectedItems.includes(task._id!)}
-                                    onCheckedChange={(checked) => {
-                                        setSelectedItems(prev =>
-                                            checked
-                                                ? [...prev, task._id!]
-                                                : prev.filter(id => id !== task._id)
-                                        );
-                                    }}
-                                    id={task._id} />
-                                <Label htmlFor={task._id} className=" font-medium">
-                                    {task.title}
+                        {taskColumns.map((col) => (
+                            <TableHead key={col.key} className="!py-5 text-center">
+                                <Label htmlFor={col.key} className="inline text-sm sm:text-base">
+                                    {col.label}
                                 </Label>
-                            </TableCell>
+                            </TableHead>
+                        ))}
+                    </TableRow>
+                </TableHeader>
+                <TableBody className="max-h-60 overflow-y-auto">
+                    {tasks.length > 0 ? (
+                        tasks.map((task) => (
+                            <TableRow
+                                key={task._id}
+                                className="hover:bg-accent"
+                            >
+                                {/* checkbox */}
+                                <TableCell>
+                                    <Checkbox
+                                        checked={selectedItems.includes(task._id!)}
+                                        onCheckedChange={(checked) => {
+                                            setSelectedItems(prev =>
+                                                checked
+                                                    ? [...prev, task._id!]
+                                                    : prev.filter(id => id !== task._id)
+                                            );
+                                        }}
+                                        id={task._id} />
 
-                            {/* Status */}
-                            <TableCell className="py-6 px-10">
-                                <span
-                                    className={cn(
-                                        "px-3 py-1 rounded-full text-xs font-medium capitalize",
-                                        task.status === "todo"
-                                            ? "bg-sky-100 text-sky-900"
-                                            : task.status === "in-progress"
-                                                ? "bg-yellow-100 text-yellow-900"
-                                                : "bg-green-100 text-green-900"
-                                    )}
-                                >
-                                    {task.status || "unknown"}
-                                </span>
-                            </TableCell>
+                                </TableCell>
+                                {/* Title */}
+                                <TableCell className="gap-2 flex justify-center items-center">
+                                    <Label htmlFor={task._id} className=" font-medium">
+                                        {task.title}
+                                    </Label>
+                                </TableCell>
 
-                            {/* Priority */}
-                            <TableCell className="py-6 px-10">
-                                <span
-                                    className={cn(
-                                        "px-3 py-1 rounded-full text-xs font-medium capitalize",
-                                        task.priority === "high"
-                                            ? "bg-red-800/90 text-red-100"
-                                            : task.priority === "medium"
-                                                ? "bg-yellow-100 text-yellow-900"
-                                                : "bg-green-100 text-green-900"
-                                    )}
-                                >
-                                    {task.priority}
-                                </span>
-                            </TableCell>
+                                {/* Status */}
+                                <TableCell className="text-center">
+                                    <span
+                                        className={cn(
+                                            "px-3 py-1 rounded-full text-xs font-medium capitalize",
+                                            task.status === "todo"
+                                                ? "bg-sky-100 text-sky-900"
+                                                : task.status === "in-progress"
+                                                    ? "bg-yellow-100 text-yellow-900"
+                                                    : "bg-green-100 text-green-900"
+                                        )}
+                                    >
+                                        {task.status || "unknown"}
+                                    </span>
+                                </TableCell>
 
-                            {/* Assigned To */}
-                            <TableCell className="whitespace-nowrap">
-                                {task.assignedTo || "-"}
-                            </TableCell>
+                                {/* Priority */}
+                                <TableCell className="text-center">
+                                    <span
+                                        className={cn(
+                                            "px-3 py-1 rounded-full text-xs font-medium capitalize",
+                                            task.priority === "high"
+                                                ? "bg-red-800/90 text-red-100"
+                                                : task.priority === "medium"
+                                                    ? "bg-yellow-100 text-yellow-900"
+                                                    : "bg-green-100 text-green-900"
+                                        )}
+                                    >
+                                        {task.priority}
+                                    </span>
+                                </TableCell>
 
-                            {/* Due Date */}
-                            <TableCell className="py-6 px-10">
-                                {task.dueDate
-                                    ? new Date(task.dueDate).toLocaleDateString()
-                                    : "No due date"}
-                            </TableCell>
+                                {/* Assigned To */}
+                                <TableCell className="text-center">
+                                    {task.assignedTo || "-"}
+                                </TableCell>
 
-                            {/* Created At */}
-                            <TableCell className="py-6 px-10">
-                                {new Date(task.createdAt).toLocaleDateString()}
-                            </TableCell>
+                                {/* Due Date */}
+                                <TableCell className="text-center">
+                                    {task.dueDate
+                                        ? new Date(task.dueDate).toLocaleDateString()
+                                        : "No due date"}
+                                </TableCell>
 
-                            {/* Actions */}
-                            <TableCell className="flex flex-wrap gap-2 justify-center">
-                                <Button
-                                    size="sm"
-                                    className="hover:bg-yellow-600 bg-yellow-500 cursor-pointer w-full sm:w-auto"
-                                >
-                                    Edit
-                                </Button>
-                                <Button
-                                    size="sm"
-                                    variant="destructive"
-                                    className="w-full sm:w-auto"
-                                >
-                                    Delete
-                                </Button>
+                                {/* Created At */}
+                                <TableCell className="text-center">
+                                    {new Date(task.createdAt).toLocaleDateString()}
+                                </TableCell>
+
+                                {/* Actions */}
+                                <TableCell className="flex flex-wrap gap-2 justify-center">
+                                    <Button
+                                        className="hover:bg-yellow-600 dark:text-yellow-50 text-yellow-100 bg-yellow-500 cursor-pointer lg:w-fit w-full"
+                                    >
+                                        Edit
+                                    </Button>
+                                    <Button
+                                        variant="destructive"
+                                        className="lg:w-fit w-full"
+                                    >
+                                        Delete
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    ) : (
+                        <TableRow>
+                            <TableCell
+                                className="dark:text-red-400 py-5"
+                                colSpan={7}
+                            >
+                                No tasks found
                             </TableCell>
                         </TableRow>
-                    ))
-                ) : (
-                    <TableRow>
-                        <TableCell
-                            className="dark:text-red-400 py-5"
-                            colSpan={7}
-                        >
-                            No tasks found
-                        </TableCell>
-                    </TableRow>
-                )}
-            </TableBody>
-        </Table>
+                    )}
+                </TableBody>
+            </Table>
+        </div>
 
     )
 }

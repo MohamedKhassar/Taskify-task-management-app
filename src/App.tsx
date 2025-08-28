@@ -11,13 +11,17 @@ import Dashboard from "./components/Dashboard";
 const App = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, loading } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     // whenever route changes, reset error and reload user from storage
     dispatch(clearError());
     dispatch(loadUserFromStorage());
   }, [location, dispatch]);
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
 
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
@@ -38,8 +42,8 @@ const App = () => {
             </Route>
 
             {/* Block access to auth pages */}
-            <Route path="/login" element={<Navigate to="/dashboard" />} />
-            <Route path="/register" element={<Navigate to="/dashboard" />} />
+            <Route path="/login" element={<Navigate replace to="/dashboard" />} />
+            <Route path="/register" element={<Navigate replace to="/dashboard" />} />
           </Route>
         ) : (
           // Routes when not logged in
@@ -48,7 +52,7 @@ const App = () => {
             <Route path="/register" element={<Register />} />
 
             {/* Block access to dashboard */}
-            <Route path="/dashboard/*" element={<Navigate to="/login" />} />
+            <Route path="/dashboard/*" element={<Navigate replace to="/login" />} />
           </>
         )}
 
@@ -56,7 +60,7 @@ const App = () => {
         <Route
           path="/"
           element={
-            <Navigate to={user ? "/dashboard" : "/login"} />
+            <Navigate replace to={user ? "/dashboard" : "/login"} />
           }
         />
       </Routes>

@@ -42,7 +42,7 @@ export interface Task {
   status: "todo" | "in-progress" | "completed";
   priority: "low" | "medium" | "high";
   assignedTo?: string;
-  dueDate?: string;
+  dueDate?: Date;
   tags?: string[];
   createdBy?: string;
   createdAt:Date

@@ -1,6 +1,6 @@
 "use client"
 
-import PageTitle from "./PageTitle"
+import PageTitle from "../components/PageTitle"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { motion } from "framer-motion"
 
@@ -24,6 +24,8 @@ import { fetchTasks } from "@/slice/taskSlice"
 import type { RootState } from "@/store"
 import { Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Link } from "react-router-dom"
+import { statusColors } from "@/utils/data"
 
 ChartJS.register(
     ArcElement,
@@ -54,11 +56,7 @@ ChartJS.register(
 export default function Dashboard() {
     const dispatch = useAppDispatch()
     const data = useAppSelector((state: RootState) => state.tasks)
-    const statusColors: Record<string, string> = {
-        "completed": "#388e3c",
-        "in-progress": "#FACC15",
-        "todo": "#60A5FA",
-    };
+    
     const taskCounts = data.tasks.reduce((acc, task) => {
         const status = task.status.toLowerCase();
         acc[status] = (acc[status] || 0) + 1;
@@ -103,62 +101,66 @@ export default function Dashboard() {
     }, [dispatch])
     console.log(data)
     return (
-        <div className="grid gap-6 p-6">
+        <main className="grid gap-6 p-6">
             {/* Title */}
             <PageTitle title="Dashboard" />
 
             {/* KPI Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                    <Card className="shadow-lg rounded-2xl">
-                        <CardHeader>
-                            <CardTitle className="text-base">Total</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-2xl font-bold">
-                                {data.tasks.length}
-                            </p>
-                        </CardContent>
-                    </Card>
+                    <Link to={"tasks"}>
+                        <Card className="shadow-lg rounded-2xl">
+                            <CardHeader>
+                                <CardTitle className="text-base">Total</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-2xl font-bold">
+                                    {data.tasks.length}
+                                </p>
+                            </CardContent>
+                        </Card>
+                    </Link>
                 </motion.div>
 
-                {["todo", "in progress", "completed"].map((item, i) => (
+                {[{ label: "todo", href: "tasks/todo" }, { label: "in progress", href: "tasks/in-progress" }, { label: "completed", href: "tasks/completed" }].map((item, i) => (
                     <motion.div
                         key={i}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
                     >
-                        <Card
-                            className={cn("shadow-lg rounded-2xl")}
-                            style={{
-                                backgroundColor: statusColors[
-                                    Object.keys(statusColors).find(
-                                        (status) => status.replace("-", "") === item.toLowerCase().replace(" ", "")
-                                    ) as keyof typeof statusColors
-                                ],
-                            }}
-                        >
+                        <Link to={item.href}>
+                            <Card
+                                className={cn("shadow-lg rounded-2xl")}
+                                style={{
+                                    backgroundColor: statusColors[
+                                        Object.keys(statusColors).find(
+                                            (status) => status.replace("-", "") === item.label.toLowerCase().replace(" ", "")
+                                        ) as keyof typeof statusColors
+                                    ],
+                                }}
+                            >
 
-                            <CardHeader>
-                                <CardTitle className="text-base capitalize">{item}</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-2xl font-bold">
-                                    {data.tasks ? (
-                                        data.tasks.filter(task => task.status.toLowerCase().replace("-", "") === item.toLowerCase().replace(" ", "")).length
-                                    ) : (
-                                        <Loader2 className="animate-spin" />
-                                    )}
-                                </p>
-                            </CardContent>
-                        </Card>
+                                <CardHeader>
+                                    <CardTitle className="text-base capitalize">{item.label}</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="text-2xl font-bold">
+                                        {data.tasks ? (
+                                            data.tasks.filter(task => task.status.toLowerCase().replace("-", "") === item.label.toLowerCase().replace(" ", "")).length
+                                        ) : (
+                                            <Loader2 className="animate-spin" />
+                                        )}
+                                    </p>
+                                </CardContent>
+                            </Card>
+                        </Link>
                     </motion.div>
                 ))}
-            </div>
+            </section>
 
             {/* Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Pie Chart */}
                 <Card className="shadow-lg rounded-2xl">
                     <CardHeader>
@@ -220,7 +222,7 @@ export default function Dashboard() {
                         </div>
                     </CardContent>
                 </Card> */}
-            </div>
-        </div>
+            </section>
+        </main >
     )
 }

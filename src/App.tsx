@@ -6,12 +6,13 @@ import { ThemeProvider } from "./Providers/theme-provider";
 import { useAppDispatch, useAppSelector } from "./hooks/redux";
 import { useEffect } from "react";
 import { clearError, loadUserFromStorage } from "./slice/authSlice";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./layout/Dashboard";
+import Tasks from "./layout/Tasks";
 
 const App = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, loading } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     // whenever route changes, reset error and reload user from storage
@@ -19,16 +20,20 @@ const App = () => {
     dispatch(loadUserFromStorage());
   }, [location, dispatch]);
 
+  if (loading) {
+    // While checking cookie / local storage, show a loader or blank page
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
+
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <Routes>
         {user ? (
-          // Routes when logged in
           <Route element={<Layout />}>
-            <Route path="/dashboard">
+            <Route path="/dashboard/*">
               <Route index element={<Dashboard />} />
               <Route path="tasks">
-                <Route index element={<h1>tasks</h1>} />
+                <Route index element={<Tasks />} />
                 <Route path="completed" element={<h1>completed</h1>} />
                 <Route path="in-progress" element={<h1>in progress</h1>} />
                 <Route path="todo" element={<h1>todo</h1>} />
@@ -37,30 +42,21 @@ const App = () => {
               <Route path="trash" element={<h1>trash</h1>} />
             </Route>
 
-            {/* Block access to auth pages */}
-            <Route path="/login" element={<Navigate to="/dashboard" />} />
-            <Route path="/register" element={<Navigate to="/dashboard" />} />
+            <Route path="/login" element={<Navigate replace to="/dashboard" />} />
+            <Route path="/register" element={<Navigate replace to="/dashboard" />} />
           </Route>
         ) : (
-          // Routes when not logged in
           <>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-
-            {/* Block access to dashboard */}
-            <Route path="/dashboard/*" element={<Navigate to="/login" />} />
+            <Route path="/dashboard/*" element={<Navigate replace to="/login" />} />
           </>
         )}
 
-        {/* Default route */}
-        <Route
-          path="/"
-          element={
-            <Navigate to={user ? "/dashboard" : "/login"} />
-          }
-        />
+        <Route path="/" element={<Navigate replace to={user ? "/dashboard" : "/login"} />} />
       </Routes>
     </ThemeProvider>
+
   );
 };
 

@@ -62,3 +62,9 @@ export const userTitles: string[] = [
   "Freelancer",
   "Entrepreneur"
 ];
+
+export const statusColors: Record<string, string> = {
+        "completed": "#388e3c",
+        "in-progress": "#FACC15",
+        "todo": "#60A5FA",
+    };

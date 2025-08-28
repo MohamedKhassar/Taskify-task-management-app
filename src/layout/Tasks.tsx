@@ -43,7 +43,7 @@ const Tasks = () => {
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: .3 } }} className="grid gap-6" >
                 <div className="flex flex-wrap gap-3 items-center justify-between">
                     <Input value={searchTitle} onChange={handelSearchTitle} className="md:w-150 w-full border-sky-600 focus:!ring-sky-500/40" placeholder="Search by title" />
-                    <Button className="capitalize dark:text-sky-900 dark:bg-sky-200 bg-sky-900 text-sky-200 duration-300 transition-colors cursor-pointer w-full md:w-fit" >
+                    <Button className="capitalize dark:text-sky-900 dark:!bg-sky-200 !bg-sky-900 text-sky-200 duration-300 transition-colors cursor-pointer w-full md:w-fit" >
                         Create new task
                     </Button>
                 </div>

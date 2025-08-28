@@ -14,6 +14,7 @@ import { taskColumns } from "@/utils/data";
 import type { Task } from "@/utils/types";
 import type { CheckedState } from "@radix-ui/react-checkbox";
 import { useState } from "react";
+import AlertDelete from "./AlertDelete";
 
 export default function TaskTable({ tasks }: { tasks: Task[] }) {
     const [selectedItems, setSelectedItems] = useState<string[]>([])
@@ -127,12 +128,13 @@ export default function TaskTable({ tasks }: { tasks: Task[] }) {
                                     >
                                         Edit
                                     </Button>
-                                    <Button
-                                        variant="destructive"
-                                        className="lg:w-fit w-full"
-                                    >
-                                        Delete
-                                    </Button>
+                                    <AlertDelete
+                                        taskId={task._id!}
+                                        // className="hover:bg-yellow-600 dark:text-yellow-50 text-yellow-100 bg-yellow-500 cursor-pointer lg:w-fit w-full"
+                                        buttonName="delete"
+                                        question="move this task to trash?"
+                                        description="This action will move this task to trash, So you can find this task in Trash."
+                                    />
                                 </TableCell>
                             </TableRow>
                         ))

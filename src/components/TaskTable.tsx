@@ -12,9 +12,12 @@ import {
 import { useAppSelector } from "@/hooks/redux";
 import { cn } from "@/lib/utils";
 import type { RootState } from "@/store";
+import type { CheckedState } from "@radix-ui/react-checkbox";
+import { useState } from "react";
 
 export default function TaskTable() {
     const data = useAppSelector((state: RootState) => state.tasks)
+    const [selectedItems, setSelectedItems] = useState<string[]>([])
     const taskColumns = [
         { key: "title", label: "Title" },
         { key: "status", label: "Status" },
@@ -25,13 +28,21 @@ export default function TaskTable() {
         { key: "actions", label: "Actions" },
     ];
 
+    const selectAll = (checked: CheckedState) => {
+        if (checked) {
+            setSelectedItems(data.tasks.map(item => item._id!))
+        } else {
+            setSelectedItems([])
+        }
+    }
+    console.log(selectedItems)
     return (
         <Table>
             <TableHeader>
                 <TableRow>
                     {taskColumns.map((col) => (
                         <TableHead align="center" key={col.key} className="!p-2">
-                            {col.label === "Title" && <Checkbox id={col.key} className="mx-2" />}
+                            {col.label === "Title" && <Checkbox checked={data.tasks.length > 0 && selectedItems.length === data.tasks.length} onCheckedChange={(checked) => selectAll(checked)} id={col.key} className="mx-2" />}
                             <Label htmlFor={col.key} className="inline text-sm sm:text-base">
                                 {col.label}
                             </Label>
@@ -47,7 +58,16 @@ export default function TaskTable() {
                         >
                             {/* Title */}
                             <TableCell className="py-6 px-10 gap-2 flex justify-start items-center">
-                                <Checkbox id={task._id} />
+                                <Checkbox
+                                    checked={selectedItems.includes(task._id!)}
+                                    onCheckedChange={(checked) => {
+                                        setSelectedItems(prev =>
+                                            checked
+                                                ? [...prev, task._id!]
+                                                : prev.filter(id => id !== task._id)
+                                        );
+                                    }}
+                                    id={task._id} />
                                 <Label htmlFor={task._id} className=" font-medium">
                                     {task.title}
                                 </Label>

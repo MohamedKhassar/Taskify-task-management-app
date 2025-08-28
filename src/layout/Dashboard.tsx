@@ -18,9 +18,7 @@ import {
     LineElement,
 } from "chart.js"
 import { Line, Doughnut } from "react-chartjs-2"
-import { useAppDispatch, useAppSelector } from "@/hooks/redux"
-import { useEffect } from "react"
-import { fetchTasks } from "@/slice/taskSlice"
+import {  useAppSelector } from "@/hooks/redux"
 import type { RootState } from "@/store"
 import { Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -54,9 +52,7 @@ ChartJS.register(
 // }
 
 export default function Dashboard() {
-    const dispatch = useAppDispatch()
     const data = useAppSelector((state: RootState) => state.tasks)
-    
     const taskCounts = data.tasks.reduce((acc, task) => {
         const status = task.status.toLowerCase();
         acc[status] = (acc[status] || 0) + 1;
@@ -93,15 +89,9 @@ export default function Dashboard() {
             },
         ],
     };
-    useEffect(() => {
-        const getData = async () => {
-            await dispatch(fetchTasks())
-        }
-        getData()
-    }, [dispatch])
-    console.log(data)
+    
     return (
-        <main className="grid gap-6 p-6">
+        <main className="grid gap-6">
             {/* Title */}
             <PageTitle title="Dashboard" />
 

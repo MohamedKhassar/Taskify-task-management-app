@@ -12,23 +12,15 @@ import {
 import { cn } from "@/lib/utils";
 import { taskColumns } from "@/utils/data";
 import type { Task } from "@/utils/types";
-import type { CheckedState } from "@radix-ui/react-checkbox";
-import { useState } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 import AlertDelete from "./AlertDelete";
+import type { CheckedState } from "@radix-ui/react-checkbox";
+import { motion } from "framer-motion";
+export default function TaskTable({ tasks, selectedItems, setSelectedItems, selectAll }: { tasks: Task[], selectedItems: string[], setSelectedItems: Dispatch<SetStateAction<string[]>>, selectAll: (checked: CheckedState) => void }) {
 
-export default function TaskTable({ tasks }: { tasks: Task[] }) {
-    const [selectedItems, setSelectedItems] = useState<string[]>([])
-
-
-    const selectAll = (checked: CheckedState) => {
-        if (checked) {
-            setSelectedItems(tasks.map(item => item._id!))
-        } else {
-            setSelectedItems([])
-        }
-    }
     return (
-        <div className="border rounded-xl overflow-auto xl:max-h-185 md:max-h-160 max-h-170  scrollbar scrollbar-track-slate-50 scrollbar-thumb-sky-900 h-fit">
+        <motion.div
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: .5 } }} className="border rounded-xl overflow-auto xl:max-h-147 md:max-h-160 max-h-170  h-fit">
             <Table>
                 <TableHeader className="bg-accent">
                     <TableRow>
@@ -44,7 +36,7 @@ export default function TaskTable({ tasks }: { tasks: Task[] }) {
                         ))}
                     </TableRow>
                 </TableHeader>
-                <TableBody className="max-h-60 overflow-y-auto">
+                <TableBody>
                     {tasks.length > 0 ? (
                         tasks.map((task) => (
                             <TableRow
@@ -150,7 +142,7 @@ export default function TaskTable({ tasks }: { tasks: Task[] }) {
                     )}
                 </TableBody>
             </Table>
-        </div>
+        </motion.div>
 
     )
 }

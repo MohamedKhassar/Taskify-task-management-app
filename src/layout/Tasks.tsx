@@ -59,15 +59,16 @@ const Tasks = () => {
                     initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: .3 } }}
                     className="flex flex-wrap gap-3 items-center justify-between">
                     <Input value={searchTitle} onChange={handelSearchTitle} className="md:w-150 w-full border-sky-600 focus:!ring-sky-500/40" placeholder="Search by title" />
-                    <div className="flex items-center gap-2">
+                    <div className="flex md:flex-row flex-col-reverse items-center gap-2 md:w-fit w-full">
                         <AnimatePresence>
                             {selectedItems.length > 0 &&
                                 <motion.span
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1, transition: { duration: .5 } }}
                                     exit={{ opacity: 0, transition: { duration: .5 } }}
+                                     className="w-full md:w-fit"
                                 >
-                                    <Button variant={"destructive"} >
+                                    <Button variant={"destructive"}  className="w-full md:w-fit">
                                         <Trash2Icon />
                                     </Button>
                                 </motion.span>

@@ -14,7 +14,7 @@ const AlertDelete = ({ buttonName, description, question, taskId }: { buttonName
     return (
         <AlertDialog>
             <AlertDialogTrigger
-                className="capitalize cursor-pointer bg-red-700 hover:bg-red-800 p-2 rounded-lg text-red-50">
+                className="capitalize cursor-pointer bg-red-700 hover:bg-red-800 p-2 rounded-lg text-red-50 w-full lg:w-fit">
                 {buttonName}
             </AlertDialogTrigger>
             <AlertDialogContent>

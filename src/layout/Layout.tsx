@@ -21,7 +21,7 @@ const Layout = () => {
         <main className="md:flex w-full justify-stretch">
             <Sidebar />
             <SmallSidebar />
-            <section className="flex flex-col w-full md:px-10 md:py-5 px-5 py-2.5 justify-start">
+            <section className="flex flex-col w-full md:px-10 md:py-5 px-5 py-10 justify-start">
                 <Navbar />
                 <div className="w-full">
                     <Outlet />

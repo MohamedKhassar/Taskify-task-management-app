@@ -11,11 +11,11 @@ const SmallSidebar = () => {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <div className="md:hidden relative">
+    <div className="lg:hidden relative">
       {/* Toggle Button */}
       <Button
         onClick={() => setIsOpen(true)}
-        className="p-2 z-50 dark:bg-sky-800 bg-sky-200 text-sky-800 dark:text-sky-200 rounded-l-none fixed top-8"
+        className="p-2 z-50 dark:!bg-sky-800 !bg-sky-200 !text-sky-800 dark:!text-sky-200 rounded-l-none fixed top-0"
       >
         <SidebarOpen className="size-6" />
       </Button>
@@ -47,7 +47,7 @@ const SmallSidebar = () => {
                   setIsOpen(false)
                 }
               }}
-              className="fixed top-0 left-0 h-full w-64 z-50 dark:bg-dark bg-light p-6 space-y-8 shadow-lg"
+              className="fixed top-0 left-0 h-full w-70 z-50 dark:bg-dark bg-light p-6 space-y-8 shadow-lg"
             >
               {/* Logo */}
               <Link to="/dashboard" className="flex items-center gap-2">

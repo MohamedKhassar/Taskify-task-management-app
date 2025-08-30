@@ -137,5 +137,5 @@ body{
 }
 
 ::-webkit-scrollbar{
-  @apply w-1 bg-body;
+  @apply w-1 dark:bg-dark rounded-2xl;
 }

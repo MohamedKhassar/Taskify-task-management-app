@@ -8,7 +8,6 @@ import type { RootState } from "@/store";
 import { useEffect, useState, type ChangeEvent, } from "react"
 import { type Task } from "@/utils/types"
 import { List, Table, Trash2Icon } from "lucide-react"
-import type { CheckedState } from "@radix-ui/react-checkbox"
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 
@@ -18,20 +17,21 @@ const Tasks = () => {
     const [searchTitle, setSearchTitle] = useState("")
     const [filteredTask, setFilteredTask] = useState<Task[]>([])
     const [viewType, setViewType] = useState<"table" | "list">("table")
+    const [limit, setLimit] = useState({
+        from: 0,
+        to: 8
+    })
 
-    const selectAll = (checked: CheckedState) => {
-        if (checked) {
-            setSelectedItems(data.tasks.map(item => item._id!))
-        } else {
-            setSelectedItems([])
-        }
-    }
 
     useEffect(() => {
         setFilteredTask(data.tasks)
     }, [data.tasks])
 
     const handelSearchTitle = (e: ChangeEvent<HTMLInputElement>) => {
+        setLimit({
+            from: 0,
+            to: 8
+        })
         const value = e.target.value
         setSearchTitle(value)
 
@@ -54,7 +54,7 @@ const Tasks = () => {
             {/* Title */}
             <PageTitle title="Tasks" />
             <section
-                className="grid gap-6" >
+                className="grid gap-5" >
                 <motion.div
                     initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: .3 } }}
                     className="flex flex-wrap gap-3 items-center justify-between">
@@ -66,9 +66,9 @@ const Tasks = () => {
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1, transition: { duration: .5 } }}
                                     exit={{ opacity: 0, transition: { duration: .5 } }}
-                                     className="w-full md:w-fit"
+                                    className="w-full md:w-fit"
                                 >
-                                    <Button variant={"destructive"}  className="w-full md:w-fit">
+                                    <Button variant={"destructive"} className="w-full md:w-fit">
                                         <Trash2Icon />
                                     </Button>
                                 </motion.span>
@@ -92,7 +92,32 @@ const Tasks = () => {
                 <DropdownMenuSeparator className="bg-sky-700 dark:bg-sky-600" />
                 {
                     viewType == "table" ?
-                        <TaskTable selectAll={(checked) => selectAll(checked)} selectedItems={selectedItems} setSelectedItems={setSelectedItems} tasks={filteredTask || data.tasks} />
+                        <>
+                            <TaskTable selectedItems={selectedItems} setSelectedItems={setSelectedItems} tasks={filteredTask.slice(limit.from, limit.to)} />
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: .4 } }} className="flex items-center md:justify-end justify-center space-x-2 py-4">
+                                <div className="text-muted-foreground flex-1 text-sm">
+                                    {selectedItems.length} of {filteredTask.length} row{filteredTask.length > 0 && "(s)"} selected.
+                                </div>
+                                <div className="space-x-2">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setLimit({ from: limit.from -= 8, to: limit.to -= 8 })}
+                                        disabled={limit.from == 0}
+                                    >
+                                        Previous
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setLimit({ from: limit.from += 8, to: limit.to += 8 })}
+                                        disabled={limit.to >= filteredTask.length}
+                                    >
+                                        Next
+                                    </Button>
+                                </div>
+                            </motion.div>
+                        </>
                         :
                         "list"
                 }

@@ -13,12 +13,24 @@ import { cn } from "@/lib/utils";
 import { taskColumns } from "@/utils/data";
 import { Status, type Task } from "@/utils/types";
 import { type Dispatch, type SetStateAction } from "react";
-import AlertDelete from "./AlertDelete";
 import type { CheckedState } from "@radix-ui/react-checkbox";
 import { motion } from "framer-motion";
 import { useAppSelector } from "@/hooks/redux";
 import type { RootState } from "@/store";
-export default function TaskTable({ tasks, selectedItems, setSelectedItems }: { tasks: Task[], selectedItems: string[], setSelectedItems: Dispatch<SetStateAction<string[]>> }) {
+import { Loader2, UndoDot } from "lucide-react";
+export default function TaskTable({
+    tasks,
+    selectedItems,
+    setSelectedItems,
+    onDelete,
+    mode="task"
+}: {
+    tasks: Task[],
+    selectedItems: string[],
+    setSelectedItems: Dispatch<SetStateAction<string[]>>,
+    onDelete: (ids: string[]) => void,
+    mode?:"task"|"trash"
+}) {
     const selectAll = (checked: CheckedState) => {
         if (checked) {
             setSelectedItems(tasks.map(item => item._id!))
@@ -26,7 +38,9 @@ export default function TaskTable({ tasks, selectedItems, setSelectedItems }: { 
             setSelectedItems([])
         }
     }
-    const {loading}=useAppSelector((state:RootState)=>state.tasks)
+
+
+    const { loading } = useAppSelector((state: RootState) => state.tasks)
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: .5 } }} className="border rounded-xl overflow-x-scroll">
@@ -125,17 +139,25 @@ export default function TaskTable({ tasks, selectedItems, setSelectedItems }: { 
 
                                 {/* Actions */}
                                 <TableCell className="flex flex-wrap gap-2 justify-center">
+                                    {mode=="task"?
                                     <Button
-                                        className="hover:bg-yellow-600 dark:text-yellow-50 text-yellow-100 bg-yellow-500 cursor-pointer lg:w-fit w-full"
+                                    className="hover:bg-yellow-600 dark:text-yellow-50 text-yellow-100 bg-yellow-500 cursor-pointer lg:w-fit w-full"
                                     >
                                         Edit
                                     </Button>
-                                    <AlertDelete
-                                        taskId={task._id!}
-                                        buttonName="delete"
-                                        question="move this task to trash?"
-                                        description="This action will move this task to trash, So you can find this task in Trash."
-                                    />
+                                    :
+                                    <Button
+                                    className="hover:bg-yellow-600 dark:text-yellow-50 text-yellow-100 bg-yellow-500 cursor-pointer lg:w-fit w-full"
+                                    >
+                                        <UndoDot className="size-fit" />
+                                    </Button>
+                                    }
+                                    <Button
+                                        onClick={() => onDelete([task._id!])}
+                                        variant={"destructive"}
+                                    >
+                                        {!loading ? "Delete" : <Loader2 className="animate-spin" />}
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))

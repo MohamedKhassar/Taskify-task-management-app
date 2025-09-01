@@ -10,7 +10,7 @@ import { type Task } from "@/utils/types"
 import { List, Loader2, Table, Trash2Icon } from "lucide-react"
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
-import { SoftDeleteTaskByIds, fetchTasks } from "@/slice/taskSlice"
+import { DeleteTaskByIds, fetchTasks } from "@/slice/taskSlice"
 import { Bounce, toast, ToastContainer } from "react-toastify"
 
 
@@ -48,9 +48,9 @@ const Trash = () => {
         }
     }
 
-    const deleteTasks = async () => {
+    const deleteTasks = async (ids?: string[] | undefined) => {
         try {
-            const res = await dispatch(SoftDeleteTaskByIds(selectedItems)).unwrap()
+            const res = await dispatch(DeleteTaskByIds(ids ?? selectedItems)).unwrap()
             toast.success(res.message, {
                 position: "top-right",
                 autoClose: 5000,
@@ -104,7 +104,7 @@ const Trash = () => {
                                     exit={{ opacity: 0, transition: { duration: .5 } }}
                                     className="w-full md:w-fit"
                                 >
-                                    <Button onClick={deleteTasks} variant={"destructive"} className="w-full md:w-fit">
+                                    <Button onClick={() => deleteTasks()} variant={"destructive"} className="w-full md:w-fit">
                                         {data.loading ? <Loader2 className="animate-spin" /> :
                                             <Trash2Icon />
                                         }
@@ -128,7 +128,7 @@ const Trash = () => {
                 {
                     viewType == "table" ?
                         <>
-                            <TaskTable selectedItems={selectedItems} setSelectedItems={setSelectedItems} tasks={filteredTask.slice(limit.from, limit.to)} />
+                            <TaskTable mode="trash" onDelete={deleteTasks} selectedItems={selectedItems} setSelectedItems={setSelectedItems} tasks={filteredTask.slice(limit.from, limit.to).filter(item => item.deletedAt != null)} />
                             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: .4 } }} className="flex items-center md:justify-end justify-center space-x-2 py-4">
                                 <div className="text-muted-foreground flex-1 text-sm">
                                     {selectedItems.length} of {filteredTask.length} row{filteredTask.length > 0 && "(s)"} selected.

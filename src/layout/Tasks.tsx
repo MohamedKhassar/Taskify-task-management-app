@@ -50,20 +50,13 @@ const Tasks = () => {
         }
     }
 
-    const deleteTasks = async () => {
+
+    const softDeleteTasks = async (ids?: string[] | undefined) => {
         try {
-            const res = await dispatch(SoftDeleteTaskByIds(selectedItems)).unwrap()
-            toast.success(res.message, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-                transition: Bounce,
-            });
+            const res = await dispatch(
+                SoftDeleteTaskByIds(ids ?? selectedItems) // ✅ if no ids passed, use selectedItems
+            ).unwrap();
+            toast.success(res.message);
             await dispatch(fetchTasks())
             setSelectedItems([])
         } catch (error) {
@@ -113,7 +106,7 @@ const Tasks = () => {
                                     exit={{ opacity: 0, transition: { duration: .5 } }}
                                     className="w-full md:w-fit"
                                 >
-                                    <Button onClick={deleteTasks} variant={"destructive"} className="w-full md:w-fit">
+                                    <Button onClick={()=>softDeleteTasks()} variant={"destructive"} className="w-full md:w-fit">
                                         {data.loading ? <Loader2 className="animate-spin" /> :
                                             <Trash2Icon />
                                         }
@@ -140,7 +133,7 @@ const Tasks = () => {
                 {
                     viewType == "table" ?
                         <>
-                            <TaskTable selectedItems={selectedItems} setSelectedItems={setSelectedItems} tasks={filteredTask.slice(limit.from, limit.to)} />
+                            <TaskTable onDelete={softDeleteTasks} selectedItems={selectedItems} setSelectedItems={setSelectedItems} tasks={filteredTask.slice(limit.from, limit.to).filter(item => item.deletedAt == null)} />
                             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: .4 } }} className="flex items-center md:justify-end justify-center space-x-2 py-4">
                                 <div className="text-muted-foreground flex-1 text-sm">
                                     {selectedItems.length} of {filteredTask.length} row{filteredTask.length > 0 && "(s)"} selected.

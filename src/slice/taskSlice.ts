@@ -15,28 +15,28 @@ const initialState: TaskState = {
 };
 
 // Fetch tasks thunk
-export const fetchTasks = createAsyncThunk<
-  Task[],
-  { query: string }|undefined
->("tasks/fetchTasks", async (search , { rejectWithValue }) => {
-  try {
-    const token = Cookies.get("token");
-    const res = await axios.get(
-      `${import.meta.env.VITE_API_BASE_URL}/get-task?${search?.query}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-    return res.data;
-  } catch (err) {
-    const error = err as AxiosError<ApiErrorResponse>;
-    const message =
-      error.response?.data.errors?.join(", ") ||
-      error.response?.data.message ||
-      "Network error";
-    return rejectWithValue(message);
+export const fetchTasks = createAsyncThunk<Task[]>(
+  "tasks/fetchTasks",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = Cookies.get("token");
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/get-task`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      return res.data;
+    } catch (err) {
+      const error = err as AxiosError<ApiErrorResponse>;
+      const message =
+        error.response?.data.errors?.join(", ") ||
+        error.response?.data.message ||
+        "Network error";
+      return rejectWithValue(message);
+    }
   }
-});
+);
 
 // Create task thunk
 export const createTask = createAsyncThunk<
@@ -63,7 +63,7 @@ export const createTask = createAsyncThunk<
   }
 });
 
-// Delete task by ids
+// Soft Delete task by ids
 export const SoftDeleteTaskByIds = createAsyncThunk<
   { ids: string[]; message: string },
   string[]
@@ -74,6 +74,31 @@ export const SoftDeleteTaskByIds = createAsyncThunk<
       `${import.meta.env.VITE_API_BASE_URL}/soft-delete`,
       ids,
       {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return res.data;
+  } catch (err) {
+    const error = err as AxiosError<ApiErrorResponse>;
+    const message =
+      error.response?.data.errors?.join(", ") ||
+      error.response?.data.message ||
+      "Network error";
+    return rejectWithValue(message);
+  }
+});
+
+// Delete task by ids
+export const DeleteTaskByIds = createAsyncThunk<
+  { ids: string[]; message: string },
+  string[]
+>("tasks/DeleteTaskByIds", async (ids, { rejectWithValue }) => {
+  try {
+    const token = Cookies.get("token");
+    const res = await axios.delete(
+      `${import.meta.env.VITE_API_BASE_URL}/delete`,
+      {
+        data:ids,
         headers: { Authorization: `Bearer ${token}` },
       }
     );
@@ -105,6 +130,7 @@ const tasksSlice = createSlice({
       })
       .addCase(fetchTasks.rejected, (state, action) => {
         state.loading = false;
+        state.tasks = [];
         state.error = action.payload as string;
       })
       // Create task
@@ -123,7 +149,7 @@ const tasksSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      // delete task
+      // soft delete task
       .addCase(SoftDeleteTaskByIds.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -136,6 +162,22 @@ const tasksSlice = createSlice({
         }
       )
       .addCase(SoftDeleteTaskByIds.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      // delete task
+      .addCase(DeleteTaskByIds.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        DeleteTaskByIds.fulfilled,
+        (state, action: PayloadAction<{ message: string }>) => {
+          state.loading = false;
+          state.message = action.payload.message;
+        }
+      )
+      .addCase(DeleteTaskByIds.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

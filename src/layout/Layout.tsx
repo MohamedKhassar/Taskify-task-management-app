@@ -7,20 +7,16 @@ import { useEffect } from "react"
 import { fetchTasks } from "@/slice/taskSlice"
 
 const Layout = () => {
-        const dispatch = useAppDispatch()
+    const dispatch = useAppDispatch()
 
-    const {pathname}=useLocation()
+    const { pathname } = useLocation()
 
     useEffect(() => {
         const getData = async () => {
-            if(pathname.includes("trash")){
-                await dispatch(fetchTasks({query:"query=trash"}))
-            }else{
-                await dispatch(fetchTasks())
-            }
+            await dispatch(fetchTasks())
         }
         getData()
-    }, [dispatch,pathname])
+    }, [dispatch, pathname])
     return (
         <main className="md:flex w-full justify-stretch">
             <Sidebar />

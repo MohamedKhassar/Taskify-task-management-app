@@ -51,7 +51,7 @@ export interface Task {
   tags?: string[];
   createdBy?: string;
   createdAt: Date;
-  deletedAt: Date;
+  deletedAt?: Date;
 }
 
 export interface TaskState {

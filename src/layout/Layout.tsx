@@ -13,7 +13,11 @@ const Layout = () => {
 
     useEffect(() => {
         const getData = async () => {
-            await dispatch(fetchTasks())
+            if(pathname.includes("trash")){
+                await dispatch(fetchTasks({query:"query=trash"}))
+            }else{
+                await dispatch(fetchTasks())
+            }
         }
         getData()
     }, [dispatch,pathname])

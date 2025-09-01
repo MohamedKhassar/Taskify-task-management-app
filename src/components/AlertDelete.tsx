@@ -9,8 +9,31 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { useAppDispatch } from "@/hooks/redux";
+import { fetchTasks, SoftDeleteTaskByIds } from "@/slice/taskSlice";
+import { Bounce, toast } from "react-toastify";
 
 const AlertDelete = ({ buttonName, description, question, taskId }: { buttonName: string, description?: string, question: string, taskId: string }) => {
+    const dispatch = useAppDispatch()
+    const deleteTasks = async () => {
+        try {
+            const res = await dispatch(SoftDeleteTaskByIds([taskId])).unwrap()
+            toast.success(res.message, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Bounce,
+            });
+            await dispatch(fetchTasks())
+        } catch (error) {
+            console.log(error)
+        }
+    }
     return (
         <AlertDialog>
             <AlertDialogTrigger
@@ -33,7 +56,7 @@ const AlertDelete = ({ buttonName, description, question, taskId }: { buttonName
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction
                         className="!text-red-50 hover:bg-red-800 bg-red-700 cursor-pointer capitalize"
-                        onClick={() => console.log(taskId)}
+                        onClick={deleteTasks}
                     >{buttonName}</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

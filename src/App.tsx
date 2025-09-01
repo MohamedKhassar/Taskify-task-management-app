@@ -11,6 +11,7 @@ import { useAppDispatch } from "./hooks/redux";
 import { useEffect } from "react";
 import { clearError, loadUserFromStorage } from "./slice/authSlice";
 import { useAppSelector } from "@/hooks/redux";
+import Trash from "./layout/Trash";
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -44,9 +45,9 @@ const App = () => {
               <Route path="completed" element={<h1>completed</h1>} />
               <Route path="In-Progress" element={<h1>In Progress</h1>} />
               <Route path="ToDo" element={<h1>To Do</h1>} />
+              <Route path="trash" element={<Trash />} />
               </Route>
               <Route path="team" element={<h1>team</h1>} />
-              <Route path="trash" element={<h1>trash</h1>} />
             </Route>
           </Route>
         )}

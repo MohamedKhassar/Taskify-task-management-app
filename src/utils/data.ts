@@ -43,7 +43,7 @@ export const sidebarItems: SidebarItem[] = [
   {
     label: "Trash",
     Icon: Trash2,
-    path: "/trash",
+    path: "/tasks/trash",
   },
 ];
 export const userTitles: string[] = [

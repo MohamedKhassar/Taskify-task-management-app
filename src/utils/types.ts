@@ -13,14 +13,14 @@ export type User = {
   name?: string;
   email: string;
   title?: string;
-  password:string;
-  avatar?:string
-}
+  password: string;
+  avatar?: string;
+};
 
 export type Theme = "dark" | "light" | "system";
 export type AuthButtonMood = {
-  mode?: "login" | "register"  // 👈 which page we are on
-}
+  mode?: "login" | "register"; // 👈 which page we are on
+};
 
 export interface ApiErrorResponse {
   errors?: string[];
@@ -35,21 +35,27 @@ export interface AuthState {
   error: string | null;
 }
 
+export enum Status {
+  Todo = "todo",
+  Inprogress = "in-progress",
+  Completed = "completed",
+}
 export interface Task {
   _id?: string;
   title: string;
   description?: string;
-  status: "todo" | "in-progress" | "completed";
+  status: Status;
   priority: "low" | "medium" | "high";
   assignedTo?: string;
-  dueDate?: Date;
+  dueDate: Date | undefined;
   tags?: string[];
   createdBy?: string;
-  createdAt:Date
+  createdAt: Date;
 }
 
 export interface TaskState {
   tasks: Task[];
   loading: boolean;
   error: string | null;
+  message: string | null;
 }

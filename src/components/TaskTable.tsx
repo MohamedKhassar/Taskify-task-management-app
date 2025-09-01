@@ -11,11 +11,13 @@ import {
 } from "@/components/ui/table"
 import { cn } from "@/lib/utils";
 import { taskColumns } from "@/utils/data";
-import type { Task } from "@/utils/types";
+import { Status, type Task } from "@/utils/types";
 import { type Dispatch, type SetStateAction } from "react";
 import AlertDelete from "./AlertDelete";
 import type { CheckedState } from "@radix-ui/react-checkbox";
 import { motion } from "framer-motion";
+import { useAppSelector } from "@/hooks/redux";
+import type { RootState } from "@/store";
 export default function TaskTable({ tasks, selectedItems, setSelectedItems }: { tasks: Task[], selectedItems: string[], setSelectedItems: Dispatch<SetStateAction<string[]>> }) {
     const selectAll = (checked: CheckedState) => {
         if (checked) {
@@ -24,6 +26,7 @@ export default function TaskTable({ tasks, selectedItems, setSelectedItems }: { 
             setSelectedItems([])
         }
     }
+    const {loading}=useAppSelector((state:RootState)=>state.tasks)
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: .5 } }} className="border rounded-xl overflow-x-scroll">
@@ -31,7 +34,7 @@ export default function TaskTable({ tasks, selectedItems, setSelectedItems }: { 
                 <TableHeader className="bg-accent">
                     <TableRow>
                         {tasks.length > 0 && <TableHead align="center">
-                            <Checkbox id="all" checked={tasks.length > 0 && tasks.every(item => selectedItems.includes(item._id!))}
+                            <Checkbox id="all" disabled={loading} checked={tasks.length > 0 && tasks.every(item => selectedItems.includes(item._id!))}
                                 onCheckedChange={(checked) => selectAll(checked)} />
                         </TableHead>}
                         {taskColumns.map((col) => (
@@ -76,9 +79,9 @@ export default function TaskTable({ tasks, selectedItems, setSelectedItems }: { 
                                     <span
                                         className={cn(
                                             "px-3 py-1 rounded-full text-xs font-medium capitalize",
-                                            task.status === "todo"
+                                            task.status === Status.Todo
                                                 ? "bg-sky-100 text-sky-900"
-                                                : task.status === "in-progress"
+                                                : task.status === Status.Inprogress
                                                     ? "bg-yellow-100 text-yellow-900"
                                                     : "bg-green-100 text-green-900"
                                         )}

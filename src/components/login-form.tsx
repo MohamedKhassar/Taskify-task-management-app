@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { useState, type FormEvent } from "react"
 import type { User } from "@/utils/types"
@@ -24,7 +24,6 @@ export function LoginForm({
     email: "",
     password: ""
   })
-  const nav = useNavigate()
   const dispatch = useAppDispatch()
 
 
@@ -52,7 +51,6 @@ export function LoginForm({
         name: "",
         title: ""
       });
-      nav("/dashboard")
     } catch (err) {
       console.log(err)
     }

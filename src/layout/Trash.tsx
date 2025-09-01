@@ -10,15 +10,13 @@ import { type Task } from "@/utils/types"
 import { List, Loader2, Table, Trash2Icon } from "lucide-react"
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
-import CreateTaskForm from "@/components/CreateTaskForm"
 import { SoftDeleteTaskByIds, fetchTasks } from "@/slice/taskSlice"
 import { Bounce, toast, ToastContainer } from "react-toastify"
 
 
-const Tasks = () => {
+const Trash = () => {
     const data = useAppSelector((state: RootState) => state.tasks)
     const dispatch = useAppDispatch()
-    const [open, setOpen] = useState(false)
     const [selectedItems, setSelectedItems] = useState<string[]>([])
     const [searchTitle, setSearchTitle] = useState("")
     const [filteredTask, setFilteredTask] = useState<Task[]>([])
@@ -76,7 +74,7 @@ const Tasks = () => {
 
             className="xl:p-6 p-3">
             {/* Title */}
-            <PageTitle title="Tasks" />
+            <PageTitle title="Trash" />
             <ToastContainer
                 position="top-right"
                 autoClose={5000}
@@ -91,13 +89,6 @@ const Tasks = () => {
                 theme="colored"
                 transition={Bounce}
             />
-            {/* create task popup */}
-            <AnimatePresence>
-
-                {open && (
-                    <CreateTaskForm close={() => setOpen(false)} />
-                )}
-            </AnimatePresence>
             <section
                 className="grid gap-5" >
                 <motion.div
@@ -121,9 +112,6 @@ const Tasks = () => {
                                 </motion.span>
                             }
                         </AnimatePresence>
-                        <Button onClick={() => setOpen(true)} className="capitalize dark:text-sky-900 dark:!bg-sky-200 !bg-sky-900 text-sky-200 duration-300 transition-colors cursor-pointer w-full md:w-fit">
-                            Create new task
-                        </Button>
                     </div>
                 </motion.div>
                 <motion.div
@@ -174,4 +162,4 @@ const Tasks = () => {
     )
 }
 
-export default Tasks
+export default Trash

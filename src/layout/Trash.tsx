@@ -10,7 +10,7 @@ import { type Task } from "@/utils/types"
 import { List, Loader2, Table, Trash2Icon, UndoDot } from "lucide-react"
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
-import { DeleteTaskByIds } from "@/slice/taskSlice"
+import { DeleteTaskByIds, undoDeleteTaskByIds } from "@/slice/taskSlice"
 import { Bounce, toast, ToastContainer } from "react-toastify"
 
 
@@ -64,10 +64,32 @@ const Trash = () => {
             });
             setSelectedItems([])
         } catch (error) {
+            const err = error as string
+            toast.error(err)
             console.log(error)
         }
     }
 
+    const UndoDelete = async (ids: string[]) => {
+        try {
+            const res = await dispatch(undoDeleteTaskByIds(ids)).unwrap()
+            toast.success(res.message, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Bounce,
+            });
+        } catch (error) {
+            const err = error as string
+            toast.error(err)
+            console.log(error)
+        }
+    }
     return (
         <main
 
@@ -108,10 +130,12 @@ const Trash = () => {
                                             <Trash2Icon />
                                         }
                                     </Button>
-                                    <Button
+                                    <Button onClick={() => UndoDelete!(selectedItems)}
                                         className="hover:bg-yellow-600 dark:text-yellow-50 text-yellow-100 bg-yellow-500 cursor-pointer"
                                     >
-                                        <UndoDot className="aspect-square" />
+                                        {data.loading ? <Loader2 className="animate-spin" /> :
+                                            <UndoDot className="aspect-square" />
+                                        }
                                     </Button>
                                 </motion.span>
                             }
@@ -132,7 +156,7 @@ const Trash = () => {
                 {
                     viewType == "table" ?
                         <>
-                            <TaskTable mode="trash" onDelete={deleteTasks} selectedItems={selectedItems} setSelectedItems={setSelectedItems} tasks={filteredTask.slice(limit.from, limit.to).filter(item => item.deletedAt != null)} />
+                            <TaskTable undoDelete={UndoDelete} mode="trash" onDelete={deleteTasks} selectedItems={selectedItems} setSelectedItems={setSelectedItems} tasks={filteredTask.slice(limit.from, limit.to).filter(item => item.deletedAt != null)} />
                             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: .4 } }} className="flex items-center md:justify-end justify-center space-x-2 py-4">
                                 <div className="text-muted-foreground flex-1 text-sm">
                                     {selectedItems.length} of {filteredTask.length} row{filteredTask.length > 0 && "(s)"} selected.

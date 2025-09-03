@@ -24,12 +24,14 @@ export default function TaskTable({
     selectedItems,
     setSelectedItems,
     onDelete,
+    undoDelete,
     mode = "task"
 }: {
     tasks: Task[],
     selectedItems: string[],
     setSelectedItems: Dispatch<SetStateAction<string[]>>,
     onDelete: (ids: string[]) => void,
+    undoDelete?: (ids: string[]) => void,
     mode?: "task" | "trash"
 }) {
     const [editOpen, setEditOpen] = useState(true)
@@ -50,6 +52,7 @@ export default function TaskTable({
         setTask(item)
         setEditOpen(true)
     }
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: .5 } }} className="border rounded-xl overflow-x-scroll">
@@ -190,8 +193,11 @@ export default function TaskTable({
                                         :
                                         <Button
                                             className="hover:bg-yellow-600 dark:text-yellow-50 text-yellow-100 bg-yellow-500 cursor-pointer lg:!w-fit !w-full"
+                                            onClick={() => undoDelete!([task._id!])}
                                         >
-                                            <UndoDot className="size-fit" />
+                                            {loading ? <Loader2 className="animate-spin" /> :
+                                                <UndoDot className="size-fit" />
+                                            }
                                         </Button>
                                     }
                                     <Button

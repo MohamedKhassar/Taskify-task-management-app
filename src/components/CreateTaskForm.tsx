@@ -62,7 +62,8 @@ const CreateTaskForm = ({ close }: { close: () => void }) => {
             })
             close()
         } catch (err) {
-            console.log(err)
+            const error = err as string
+            toast.error(error);
         }
     }
 

@@ -87,6 +87,31 @@ export const EditTask = createAsyncThunk<
     return rejectWithValue(message);
   }
 });
+
+// undo Delete task by ids
+export const undoDeleteTaskByIds = createAsyncThunk<
+  { ids: string[]; message: string },
+  string[]
+>("tasks/undoDeleteTaskByIds", async (ids, { rejectWithValue }) => {
+  try {
+    const token = Cookies.get("token");
+    const res = await axios.put(
+      `${import.meta.env.VITE_API_BASE_URL}/undo-delete`,
+      ids,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return { ids, message: res.data.message };
+  } catch (err) {
+    const error = err as AxiosError<ApiErrorResponse>;
+    const message =
+      error.response?.data.errors?.join(", ") ||
+      error.response?.data.message ||
+      "Network error";
+    return rejectWithValue(message);
+  }
+});
 // Soft Delete task by ids
 export const SoftDeleteTaskByIds = createAsyncThunk<
   { ids: string[]; message: string },
@@ -206,6 +231,25 @@ const tasksSlice = createSlice({
         }
       )
       .addCase(SoftDeleteTaskByIds.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      // undo delete task
+      .addCase(undoDeleteTaskByIds.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        undoDeleteTaskByIds.fulfilled,
+        (state, action: PayloadAction<{ message: string; ids: string[] }>) => {
+          state.loading = false;
+          state.message = action.payload.message;
+          state.tasks = state.tasks.filter(
+            (item) => !action.payload.ids.includes(item._id!)
+          );
+        }
+      )
+      .addCase(undoDeleteTaskByIds.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

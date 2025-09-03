@@ -25,7 +25,7 @@ export function DatePicker({ setTaskData, dueDate }: { setTaskData: Dispatch<Set
                         id="date"
                         className="w-full justify-between font-normal"
                     >
-                        {dueDate ? dueDate.toISOString().split("T")[0] : "Select date"}
+                        {dueDate ? new Date(dueDate).toLocaleDateString() : "Select date"}
                         <ChevronDownIcon />
                     </Button>
                 </PopoverTrigger>
@@ -41,7 +41,7 @@ export function DatePicker({ setTaskData, dueDate }: { setTaskData: Dispatch<Set
                             if (dueDate) {
                                 setTaskData(prev => ({
                                     ...prev,
-                                    dueDate: new Date(dueDate)  // only convert if dueDate is defined
+                                    dueDate  // only convert if dueDate is defined
                                 }))
                             } setOpen(false)
                         }}

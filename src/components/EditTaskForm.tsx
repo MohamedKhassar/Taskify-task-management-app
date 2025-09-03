@@ -21,18 +21,11 @@ import { Bounce, toast, ToastContainer } from "react-toastify"
 import type { RootState } from "@/store"
 import { Loader2 } from "lucide-react"
 
-const CreateTaskForm = ({ close }: { close: () => void }) => {
+const EditTaskForm = ({ close, task }: { close: () => void, task: Task }) => {
     const taskRef = useRef<HTMLFormElement>(null)
     const { loading } = useAppSelector((state: RootState) => state.tasks)
     const dispatch = useAppDispatch()
-    const [taskData, setTaskData] = useState<Task>({
-        title: "",
-        description: "",
-        status: Status.Todo,
-        priority: Priority.Low,
-        createdAt: new Date(),
-        dueDate: undefined
-    })
+    const [taskData, setTaskData] = useState<Task>(task)
 
     const SaveTask = async (e: FormEvent) => {
         e.preventDefault()
@@ -102,8 +95,8 @@ const CreateTaskForm = ({ close }: { close: () => void }) => {
                 onSubmit={SaveTask}
                 className="bg-white dark:bg-dark p-8 rounded-2xl w-[90%] max-w-md shadow-lg space-y-5"
             >
-                <h1 className="capitalize font-bold text-xl text-sky-800 dark:text-sky-200">
-                    Create your task
+                <h1 className="capitalize font-bold text-2xl text-sky-800 dark:text-sky-500">
+                    Edit your task
                 </h1>
 
                 {/* Title */}
@@ -161,7 +154,7 @@ const CreateTaskForm = ({ close }: { close: () => void }) => {
                         Cancel
                     </Button>
                     <Button disabled={loading} type="submit" className="bg-sky-600 text-white hover:bg-sky-700 disabled:cursor-not-allowed">
-                        {loading?<Loader2 className="animate-spin" />:"Save Task"}
+                        {loading ? <Loader2 className="animate-spin" /> : "Save Task"}
                     </Button>
                 </div>
             </motion.form>
@@ -169,4 +162,4 @@ const CreateTaskForm = ({ close }: { close: () => void }) => {
     )
 }
 
-export default CreateTaskForm
+export default EditTaskForm

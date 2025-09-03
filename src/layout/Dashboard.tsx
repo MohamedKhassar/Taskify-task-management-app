@@ -43,7 +43,7 @@ ChartJS.register(
 //     datasets: [
 //         {
 //             label: "Tasks",
-//             data: tasksPerUser.map((d) => d.tasks),
+//             data: tasksPerUser.map((d) => d),
 //             backgroundColor: "#388e3c",
 //             borderRadius: 8,
 //             barThickness: 70,
@@ -52,8 +52,9 @@ ChartJS.register(
 // }
 
 export default function Dashboard() {
-    const data = useAppSelector((state: RootState) => state.tasks)
-    const taskCounts = data.tasks.reduce((acc, task) => {
+    const {tasks} = useAppSelector((state: RootState) => state.tasks)
+    const data=tasks.filter(item=>item.deletedAt==null)
+    const taskCounts = data.reduce((acc, task) => {
         const status = task.status.toLowerCase();
         acc[status] = (acc[status] || 0) + 1;
         return acc;
@@ -71,7 +72,7 @@ export default function Dashboard() {
         ],
     };
 
-    const tasksOverTime = data.tasks.reduce<Record<string, number>>((acc, task) => {
+    const tasksOverTime = data.reduce<Record<string, number>>((acc, task) => {
         const day = new Date(task.createdAt).toLocaleDateString("en-US", { weekday: "short" });
         acc[day] = (acc[day] || 0) + (task.status === "completed" ? 1 : 0);
         return acc;
@@ -105,7 +106,7 @@ export default function Dashboard() {
                             </CardHeader>
                             <CardContent>
                                 <p className="text-2xl font-bold">
-                                    {data.tasks.length}
+                                    {data.length}
                                 </p>
                             </CardContent>
                         </Card>
@@ -136,8 +137,8 @@ export default function Dashboard() {
                                 </CardHeader>
                                 <CardContent>
                                     <p className="text-2xl font-bold">
-                                        {data.tasks ? (
-                                            data.tasks.filter(task => task.status.toLowerCase().replace("-", "") === item.label.toLowerCase().replace(" ", "")).length
+                                        {data ? (
+                                            data.filter(task => task.status.toLowerCase().replace("-", "") === item.label.toLowerCase().replace(" ", "")).length
                                         ) : (
                                             <Loader2 className="animate-spin" />
                                         )}

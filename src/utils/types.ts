@@ -40,16 +40,21 @@ export enum Status {
   Inprogress = "in-progress",
   Completed = "completed",
 }
+export enum Priority {
+  Low = "low",
+  Medium = "medium",
+  High = "high",
+}
 export interface Task {
   _id?: string;
   title: string;
   description?: string;
   status: Status;
-  priority: "low" | "medium" | "high";
+  priority: Priority;
   assignedTo?: string;
   dueDate: Date | undefined;
   tags?: string[];
-  createdBy?: string;
+  createdBy?: User;
   createdAt: Date;
   deletedAt?: Date;
 }

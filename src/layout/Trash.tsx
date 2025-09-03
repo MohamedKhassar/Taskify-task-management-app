@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import type { RootState } from "@/store";
 import { useEffect, useState, type ChangeEvent, } from "react"
 import { type Task } from "@/utils/types"
-import { List, Loader2, Table, Trash2Icon } from "lucide-react"
+import { List, Loader2, Table, Trash2Icon, UndoDot } from "lucide-react"
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 import { DeleteTaskByIds, fetchTasks } from "@/slice/taskSlice"
@@ -102,12 +102,17 @@ const Trash = () => {
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1, transition: { duration: .5 } }}
                                     exit={{ opacity: 0, transition: { duration: .5 } }}
-                                    className="w-full md:w-fit"
+                                    className="w-full md:w-fit flex flex-wrap gap-3"
                                 >
                                     <Button onClick={() => deleteTasks()} variant={"destructive"} className="w-full md:w-fit">
                                         {data.loading ? <Loader2 className="animate-spin" /> :
                                             <Trash2Icon />
                                         }
+                                    </Button>
+                                    <Button
+                                        className="hover:bg-yellow-600 dark:text-yellow-50 text-yellow-100 bg-yellow-500 cursor-pointer"
+                                    >
+                                        <UndoDot className="aspect-square" />
                                     </Button>
                                 </motion.span>
                             }

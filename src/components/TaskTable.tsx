@@ -12,25 +12,31 @@ import {
 import { cn } from "@/lib/utils";
 import { taskColumns } from "@/utils/data";
 import { Status, type Task } from "@/utils/types";
-import { type Dispatch, type SetStateAction } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import type { CheckedState } from "@radix-ui/react-checkbox";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useAppSelector } from "@/hooks/redux";
 import type { RootState } from "@/store";
 import { Loader2, UndoDot } from "lucide-react";
+import EditTaskForm from "./EditTaskForm";
 export default function TaskTable({
     tasks,
     selectedItems,
     setSelectedItems,
     onDelete,
-    mode="task"
+    mode = "task"
 }: {
     tasks: Task[],
     selectedItems: string[],
     setSelectedItems: Dispatch<SetStateAction<string[]>>,
     onDelete: (ids: string[]) => void,
-    mode?:"task"|"trash"
+    mode?: "task" | "trash"
 }) {
+    const [editOpen, setEditOpen] = useState(true)
+    const [task, setTask] = useState<Task>()
+    const { loading } = useAppSelector((state: RootState) => state.tasks)
+
+
     const selectAll = (checked: CheckedState) => {
         if (checked) {
             setSelectedItems(tasks.map(item => item._id!))
@@ -40,10 +46,20 @@ export default function TaskTable({
     }
 
 
-    const { loading } = useAppSelector((state: RootState) => state.tasks)
+    const ShowEditForm = (item: Task) => {
+        setTask(item)
+        setEditOpen(true)
+    }
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: .5 } }} className="border rounded-xl overflow-x-scroll">
+            {/* create task popup */}
+            <AnimatePresence>
+
+                {(editOpen && task) && (
+                    <EditTaskForm close={() => setEditOpen(false)} task={task} />
+                )}
+            </AnimatePresence>
             <Table>
                 <TableHeader className="bg-accent">
                     <TableRow>
@@ -52,10 +68,13 @@ export default function TaskTable({
                                 onCheckedChange={(checked) => selectAll(checked)} />
                         </TableHead>}
                         {taskColumns.map((col) => (
-                            <TableHead key={col.key} className="!py-5 text-center">
-                                <Label htmlFor={"all"} className="inline text-sm sm:text-base">
+                            <TableHead key={col.key} className="!py-5 text-center text-sm sm:text-base">
+                                {col.key === "title" ? <Label htmlFor={"all"}>
                                     {col.label}
-                                </Label>
+                                </Label> :
+                                    col.label
+
+                                }
                             </TableHead>
                         ))}
                     </TableRow>
@@ -139,22 +158,25 @@ export default function TaskTable({
 
                                 {/* Actions */}
                                 <TableCell className="flex flex-wrap gap-2 justify-center">
-                                    {mode=="task"?
-                                    <Button
-                                    className="hover:bg-yellow-600 dark:text-yellow-50 text-yellow-100 bg-yellow-500 cursor-pointer lg:w-fit w-full"
-                                    >
-                                        Edit
-                                    </Button>
-                                    :
-                                    <Button
-                                    className="hover:bg-yellow-600 dark:text-yellow-50 text-yellow-100 bg-yellow-500 cursor-pointer lg:w-fit w-full"
-                                    >
-                                        <UndoDot className="size-fit" />
-                                    </Button>
+                                    {mode == "task" ?
+                                        <Button
+                                            className="hover:bg-yellow-600 dark:text-yellow-50 text-yellow-100 bg-yellow-500 cursor-pointer lg:w-fit w-full"
+
+                                            onClick={() => ShowEditForm(task)}
+                                        >
+                                            Edit
+                                        </Button>
+                                        :
+                                        <Button
+                                            className="hover:bg-yellow-600 dark:text-yellow-50 text-yellow-100 bg-yellow-500 cursor-pointer lg:!w-fit !w-full"
+                                        >
+                                            <UndoDot className="size-fit" />
+                                        </Button>
                                     }
                                     <Button
                                         onClick={() => onDelete([task._id!])}
                                         variant={"destructive"}
+                                        className="lg:w-fit w-full"
                                     >
                                         {!loading ? "Delete" : <Loader2 className="animate-spin" />}
                                     </Button>

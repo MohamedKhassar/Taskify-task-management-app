@@ -5,7 +5,7 @@ import type { RootState } from '@/store'
 import { Status } from '@/utils/types'
 import { toast } from 'react-toastify'
 
-const Completed = () => {
+const Inprogress = () => {
     const { tasks } = useAppSelector((state: RootState) => state.tasks)
     const dispatch = useAppDispatch()
     const softDeleteTasks = async (ids: string[]) => {
@@ -19,8 +19,8 @@ const Completed = () => {
         }
     }
     return (
-        <TaskGrid  status={Status.Completed} onSoftDelete={softDeleteTasks} tasks={tasks.filter(task => task.deletedAt == null)} />
+        <TaskGrid  status={Status.Inprogress} onSoftDelete={softDeleteTasks} tasks={tasks.filter(task => task.deletedAt == null)} />
     )
 }
 
-export default Completed
+export default Inprogress

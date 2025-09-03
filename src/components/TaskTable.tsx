@@ -17,7 +17,7 @@ import type { CheckedState } from "@radix-ui/react-checkbox";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAppSelector } from "@/hooks/redux";
 import type { RootState } from "@/store";
-import { Loader2, UndoDot } from "lucide-react";
+import { Loader2, Pencil, Trash2, UndoDot } from "lucide-react";
 import EditTaskForm from "./EditTaskForm";
 export default function TaskTable({
     tasks,
@@ -34,7 +34,7 @@ export default function TaskTable({
     undoDelete?: (ids: string[]) => void,
     mode?: "task" | "trash"
 }) {
-    const [editOpen, setEditOpen] = useState(true)
+    const [editOpen, setEditOpen] = useState(false)
     const [task, setTask] = useState<Task>()
     const { loading } = useAppSelector((state: RootState) => state.tasks)
 
@@ -55,7 +55,7 @@ export default function TaskTable({
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: .5 } }} className="border rounded-xl overflow-x-scroll">
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: .5 } }} className="border rounded-xl overflow-x-scroll  max-h-130">
             {/* create task popup */}
             <AnimatePresence>
 
@@ -185,27 +185,31 @@ export default function TaskTable({
                                     {mode == "task" ?
                                         <Button
                                             className="hover:bg-yellow-600 dark:text-yellow-50 text-yellow-100 bg-yellow-500 cursor-pointer lg:w-fit w-full"
-
+                                            size={"sm"}
                                             onClick={() => ShowEditForm(task)}
                                         >
-                                            Edit
+                                            <Pencil className="size-4 fill-amber-50" /> Edit
                                         </Button>
                                         :
                                         <Button
                                             className="hover:bg-yellow-600 dark:text-yellow-50 text-yellow-100 bg-yellow-500 cursor-pointer lg:!w-fit !w-full"
+                                            size={"sm"}
                                             onClick={() => undoDelete!([task._id!])}
                                         >
                                             {loading ? <Loader2 className="animate-spin" /> :
-                                                <UndoDot className="size-fit" />
+                                                <UndoDot className="size-4" />
                                             }
                                         </Button>
                                     }
                                     <Button
                                         onClick={() => onDelete([task._id!])}
                                         variant={"destructive"}
+                                        size={"sm"}
                                         className="lg:w-fit w-full"
                                     >
-                                        {!loading ? "Delete" : <Loader2 className="animate-spin" />}
+                                        {!loading ? <>
+                                            <Trash2 className="size-4" /> Delete
+                                        </> : <Loader2 className="animate-spin" />}
                                     </Button>
                                 </TableCell>
                             </TableRow>

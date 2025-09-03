@@ -27,7 +27,7 @@ export default function TaskGrid({
     const { loading } = useAppSelector((state: RootState) => state.tasks)
     const [filtered, setFilteredTask] = useState(tasks.filter((task) => task.status === status))
     const [searchTitle, setSearchTitle] = useState("")
-    const [editOpen, setEditOpen] = useState(true)
+    const [editOpen, setEditOpen] = useState(false)
     const [task, setTask] = useState<Task>()
     // Icon + color by status
     const statusMap: Record<Status, { icon: JSX.Element; color: string }> = {
@@ -55,7 +55,7 @@ export default function TaskGrid({
 
     useEffect(() => {
         setFilteredTask(tasks.filter(item => item.status == status))
-    }, [status, task])
+    }, [status, tasks])
 
     const handelSearchTitle = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
@@ -86,29 +86,31 @@ export default function TaskGrid({
                     )}
                 </AnimatePresence>
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: .3 } }}
+                    initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0, transition: { delay: .1 } }}
                     className="flex flex-wrap gap-3 items-center justify-between">
                     <Input value={searchTitle} onChange={handelSearchTitle} className="md:w-150 w-full border-sky-600 focus:!ring-sky-500/40" placeholder="Search by title" />
                 </motion.div>
                 {
                     filtered.length > 0 ?
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4 }}
+                        <div
                             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
                         >
                             {filtered.map((task, i) => (
                                 <Popover
                                     key={task._id}
-                                    open={selectedTask?._id === task._id && editOpen}
-                                    onOpenChange={(open) => setSelectedTask(open ? task : null)}
-                                >
+                                    open={selectedTask?._id === task._id && editOpen == false}
+                                    onOpenChange={(open) => {
+                                        if (!editOpen) {
+                                            setSelectedTask(open ? task : null);
+                                        }
+                                    }}                                >
                                     <PopoverTrigger asChild>
                                         <motion.div
                                             initial={{ opacity: 0 }}
                                             whileHover={{ scale: 1.02, transition: { duration: .3 } }} whileTap={{ scale: 0.99, transition: { duration: .3 } }}
-                                            animate={{ opacity: 1, transition: { delay: i * .1, duration: .5 } }}
+                                            whileInView={{ opacity: 1 }}
+                                            viewport={{once:true}}
+                                            transition={{ delay: i * 0.1 }}
                                         >
                                             <Card className="cursor-pointer shadow-md hover:shadow-lg transition">
                                                 <CardHeader>
@@ -171,7 +173,7 @@ export default function TaskGrid({
                                         <div className="flex gap-3 justify-end pt-3">
                                             <Button
                                                 size="sm"
-                                                className="flex items-center gap-2"
+                                                className="flex items-center gap-2 bg-yellow-600 text-white hover:bg-yellow-700 "
                                                 onClick={() => ShowEditForm(task)}
                                             >
                                                 <Pencil className="w-4 h-4" /> Edit
@@ -193,7 +195,7 @@ export default function TaskGrid({
                                     </PopoverContent>
                                 </Popover>
                             ))}
-                        </motion.div>
+                        </div>
                         : <Empty status={Status.Completed} />
                 }
             </section>

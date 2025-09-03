@@ -92,7 +92,7 @@ export default function Dashboard() {
         ],
     };
     return (
-        <main className="grid gap-6">
+        <main className="xl:p-6 p-3 space-y-6">
             {/* Title */}
             <PageTitle title="Dashboard" />
             {

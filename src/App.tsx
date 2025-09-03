@@ -13,6 +13,8 @@ import { clearError, loadUserFromStorage } from "./slice/authSlice";
 import { useAppSelector } from "@/hooks/redux";
 import Trash from "./layout/Trash";
 import Completed from "./layout/Completed";
+import Todo from "./layout/Todo";
+import Inprogress from "./layout/Inprogress";
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -44,8 +46,8 @@ const App = () => {
               <Route path="tasks">
                 <Route index element={<Tasks />} />
                 <Route path="completed" element={<Completed />} />
-                <Route path="In-Progress" element={<h1>In Progress</h1>} />
-                <Route path="ToDo" element={<h1>To Do</h1>} />
+                <Route path="In-Progress" element={<Inprogress />} />
+                <Route path="ToDo" element={<Todo />} />
                 <Route path="trash" element={<Trash />} />
               </Route>
               <Route path="team" element={<h1>team</h1>} />

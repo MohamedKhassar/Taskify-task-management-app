@@ -63,6 +63,7 @@ const Tasks = () => {
         }
     }
 
+    console.log(filteredTask.filter(item => item.deletedAt == null))
     return (
         <main
 
@@ -105,7 +106,7 @@ const Tasks = () => {
                                     exit={{ opacity: 0, transition: { duration: .5 } }}
                                     className="w-full md:w-fit"
                                 >
-                                    <Button onClick={()=>softDeleteTasks()} variant={"destructive"} className="w-full md:w-fit">
+                                    <Button onClick={() => softDeleteTasks()} variant={"destructive"} className="w-full md:w-fit">
                                         {data.loading ? <Loader2 className="animate-spin" /> :
                                             <Trash2Icon />
                                         }
@@ -132,25 +133,35 @@ const Tasks = () => {
                 {
                     viewType == "table" ?
                         <>
-                            <TaskTable onDelete={softDeleteTasks} selectedItems={selectedItems} setSelectedItems={setSelectedItems} tasks={filteredTask.slice(limit.from, limit.to).filter(item => item.deletedAt == null)} />
+                            <TaskTable onDelete={softDeleteTasks} selectedItems={selectedItems} setSelectedItems={setSelectedItems} tasks={filteredTask
+                                .filter(task => task.deletedAt == null)
+                                .slice(limit.from, limit.to)} />
                             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: .4 } }} className="flex items-center md:justify-end justify-center space-x-2 py-4">
                                 <div className="text-muted-foreground flex-1 text-sm">
-                                    {selectedItems.length} of {filteredTask.length} row{filteredTask.length > 0 && "(s)"} selected.
+                                    {selectedItems.length} of {filteredTask.filter(item => item.deletedAt == null).length} row{filteredTask.filter(item => item.deletedAt == null).length > 0 && "(s)"} selected.
                                 </div>
                                 <div className="space-x-2">
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => setLimit({ from: limit.from -= 8, to: limit.to -= 8 })}
-                                        disabled={limit.from == 0}
+                                        onClick={() =>
+                                            setLimit(prev => ({
+                                                from: Math.max(prev.from - 8, 0),
+                                                to: Math.max(prev.to - 8, 8),
+                                            }))
+                                        } disabled={limit.from == 0}
                                     >
                                         Previous
                                     </Button>
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => setLimit({ from: limit.from += 8, to: limit.to += 8 })}
-                                        disabled={limit.to >= filteredTask.length}
+                                        onClick={() =>
+                                            setLimit(prev => ({
+                                                from: prev.from + 8,
+                                                to: Math.min(prev.to + 8, filteredTask.filter(item => item.deletedAt == null).length),
+                                            }))
+                                        } disabled={limit.to >= filteredTask.filter(item => item.deletedAt == null).length}
                                     >
                                         Next
                                     </Button>

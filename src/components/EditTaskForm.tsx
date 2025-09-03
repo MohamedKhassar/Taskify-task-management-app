@@ -19,7 +19,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux"
 import {  EditTask, fetchTasks } from "@/slice/taskSlice"
 import { Bounce, toast, ToastContainer } from "react-toastify"
 import type { RootState } from "@/store"
-import { Loader2 } from "lucide-react"
+import { Loader2, Pencil } from "lucide-react"
 
 const EditTaskForm = ({ close, task }: { close: () => void, task: Task }) => {
     const taskRef = useRef<HTMLFormElement>(null)
@@ -161,11 +161,13 @@ const EditTaskForm = ({ close, task }: { close: () => void, task: Task }) => {
 
                 {/* Buttons */}
                 <div className="flex justify-end gap-3 pt-4">
-                    <Button type="button" variant="outline" onClick={close}>
+                    <Button size={"lg"} type="button" variant="outline" onClick={close}>
                         Cancel
                     </Button>
-                    <Button disabled={loading} type="submit" className="bg-yellow-600 text-white hover:bg-yellow-700 disabled:cursor-not-allowed">
-                        {loading ? <Loader2 className="animate-spin" /> : "Edit Task"}
+                    <Button size={"lg"} disabled={loading} type="submit" className="bg-yellow-600 text-white hover:bg-yellow-700 disabled:cursor-not-allowed">
+                        {loading ? <Loader2 className="animate-spin" /> : <>
+                                                            <Pencil className="size-4 fill-amber-50" /> Edit Task
+                                                        </>}
                     </Button>
                 </div>
             </motion.form>

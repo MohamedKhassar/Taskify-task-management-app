@@ -84,6 +84,7 @@ const Trash = () => {
                 theme: "colored",
                 transition: Bounce,
             });
+            setSelectedItems([])
         } catch (error) {
             const err = error as string
             toast.error(err)

@@ -18,7 +18,7 @@ import {
     LineElement,
 } from "chart.js"
 import { Line, Doughnut } from "react-chartjs-2"
-import {  useAppSelector } from "@/hooks/redux"
+import { useAppSelector } from "@/hooks/redux"
 import type { RootState } from "@/store"
 import { Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -52,8 +52,8 @@ ChartJS.register(
 // }
 
 export default function Dashboard() {
-    const {tasks} = useAppSelector((state: RootState) => state.tasks)
-    const data=tasks.filter(item=>item.deletedAt==null)
+    const { tasks } = useAppSelector((state: RootState) => state.tasks)
+    const data = tasks.filter(item => item.deletedAt == null)
     const taskCounts = data.reduce((acc, task) => {
         const status = task.status.toLowerCase();
         acc[status] = (acc[status] || 0) + 1;
@@ -90,130 +90,144 @@ export default function Dashboard() {
             },
         ],
     };
-    
     return (
         <main className="grid gap-6">
             {/* Title */}
             <PageTitle title="Dashboard" />
+            {
+                data.length > 0 ?
+                    /* KPI Cards */
+                    (<>
+                        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+                                <Link to={"tasks"}>
+                                    <Card className="shadow-lg rounded-2xl">
+                                        <CardHeader>
+                                            <CardTitle className="text-base">Total</CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <p className="text-2xl font-bold">
+                                                {data.length}
+                                            </p>
+                                        </CardContent>
+                                    </Card>
+                                </Link>
+                            </motion.div>
 
-            {/* KPI Cards */}
-            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                    <Link to={"tasks"}>
-                        <Card className="shadow-lg rounded-2xl">
-                            <CardHeader>
-                                <CardTitle className="text-base">Total</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-2xl font-bold">
-                                    {data.length}
-                                </p>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                </motion.div>
+                            {[{ label: "todo", href: "tasks/todo" }, { label: "in progress", href: "tasks/in-progress" }, { label: "completed", href: "tasks/completed" }].map((item, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: i * 0.1 }}
+                                >
+                                    <Link to={item.href}>
+                                        <Card
+                                            className={cn("shadow-lg rounded-2xl")}
+                                            style={{
+                                                backgroundColor: statusColors[
+                                                    Object.keys(statusColors).find(
+                                                        (status) => status.replace("-", "") === item.label.toLowerCase().replace(" ", "")
+                                                    ) as keyof typeof statusColors
+                                                ],
+                                            }}
+                                        >
 
-                {[{ label: "todo", href: "tasks/todo" }, { label: "in progress", href: "tasks/in-progress" }, { label: "completed", href: "tasks/completed" }].map((item, i) => (
-                    <motion.div
-                        key={i}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.1 }}
-                    >
-                        <Link to={item.href}>
-                            <Card
-                                className={cn("shadow-lg rounded-2xl")}
-                                style={{
-                                    backgroundColor: statusColors[
-                                        Object.keys(statusColors).find(
-                                            (status) => status.replace("-", "") === item.label.toLowerCase().replace(" ", "")
-                                        ) as keyof typeof statusColors
-                                    ],
-                                }}
-                            >
+                                            <CardHeader>
+                                                <CardTitle className="text-base capitalize">{item.label}</CardTitle>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <p className="text-2xl font-bold">
+                                                    {data ? (
+                                                        data.filter(task => task.status.toLowerCase().replace("-", "") === item.label.toLowerCase().replace(" ", "")).length
+                                                    ) : (
+                                                        <Loader2 className="animate-spin" />
+                                                    )}
+                                                </p>
+                                            </CardContent>
+                                        </Card>
+                                    </Link>
+                                </motion.div>
+                            ))}
+                        </section>
 
+                        {/* Charts */}
+                        <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            {/* Pie Chart */}
+                            <Card className="shadow-lg rounded-2xl">
                                 <CardHeader>
-                                    <CardTitle className="text-base capitalize">{item.label}</CardTitle>
+                                    <CardTitle>Task Distribution</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-2xl font-bold">
-                                        {data ? (
-                                            data.filter(task => task.status.toLowerCase().replace("-", "") === item.label.toLowerCase().replace(" ", "")).length
-                                        ) : (
-                                            <Loader2 className="animate-spin" />
-                                        )}
-                                    </p>
+                                    <div className="relative h-[300px] sm:h-[350px]">
+                                        <Doughnut
+                                            data={pieData}
+                                            options={{
+                                                maintainAspectRatio: false,
+                                                plugins: {
+                                                    legend: {
+                                                        align: "center",
+                                                        position: "bottom",
+                                                        labels: { usePointStyle: true, padding: 16 },
+                                                    },
+                                                },
+                                            }}
+                                        />
+                                    </div>
                                 </CardContent>
                             </Card>
-                        </Link>
-                    </motion.div>
-                ))}
-            </section>
 
-            {/* Charts */}
-            <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Pie Chart */}
-                <Card className="shadow-lg rounded-2xl">
+                            {/* Line Chart */}
+                            <Card className="shadow-lg rounded-2xl">
+                                <CardHeader>
+                                    <CardTitle>Tasks Completed Over Time</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="relative h-[300px] sm:h-[350px]">
+                                        <Line
+                                            data={lineData}
+                                            options={{
+                                                maintainAspectRatio: false,
+                                                responsive: true,
+                                                plugins: { legend: { display: false } },
+                                            }}
+                                        />
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* Bar Chart */}
+                            {/* <Card className="shadow-lg rounded-2xl lg:col-span-2">
                     <CardHeader>
-                        <CardTitle>Task Distribution</CardTitle>
+                    <CardTitle>Tasks per Team Member</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="relative h-[300px] sm:h-[350px]">
-                            <Doughnut
-                                data={pieData}
-                                options={{
-                                    maintainAspectRatio: false,
-                                    plugins: {
-                                        legend: {
-                                            align: "center",
-                                            position: "bottom",
-                                            labels: { usePointStyle: true, padding: 16 },
-                                        },
-                                    },
-                                }}
-                            />
+                    <div className="relative h-[350px] sm:h-[400px]">
+                    <Bar
+                    data={barData}
+                    options={{
+                        maintainAspectRatio: false,
+                        responsive: true,
+                        plugins: { legend: { display: false } },
+                        }}
+                        />
                         </div>
-                    </CardContent>
-                </Card>
-
-                {/* Line Chart */}
-                <Card className="shadow-lg rounded-2xl">
-                    <CardHeader>
-                        <CardTitle>Tasks Completed Over Time</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="relative h-[300px] sm:h-[350px]">
-                            <Line
-                                data={lineData}
-                                options={{
-                                    maintainAspectRatio: false,
-                                    responsive: true,
-                                    plugins: { legend: { display: false } },
-                                }}
-                            />
-                        </div>
-                    </CardContent>
-                </Card>
-
-                {/* Bar Chart */}
-                {/* <Card className="shadow-lg rounded-2xl lg:col-span-2">
-                    <CardHeader>
-                        <CardTitle>Tasks per Team Member</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="relative h-[350px] sm:h-[400px]">
-                            <Bar
-                                data={barData}
-                                options={{
-                                    maintainAspectRatio: false,
-                                    responsive: true,
-                                    plugins: { legend: { display: false } },
-                                }}
-                            />
-                        </div>
-                    </CardContent>
-                </Card> */}
-            </section>
+                        </CardContent>
+                        </Card> */}
+                        </section>
+                    </>)
+                    :
+                    (<section className="flex flex-col items-center justify-center py-10">
+                        <img
+                            src="/imgs/empty.png"  // replace with your png path
+                            alt="No tasks"
+                            className="size-80 object-contain mb-4"
+                        />
+                        <p className="text-lg font-medium text-gray-600 dark:text-gray-300">
+                            No tasks found. Create your first one!
+                        </p>
+                    </section>)
+            }
         </main >
     )
 }

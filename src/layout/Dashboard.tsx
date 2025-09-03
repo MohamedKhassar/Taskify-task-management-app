@@ -24,6 +24,7 @@ import { Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Link } from "react-router-dom"
 import { statusColors } from "@/utils/data"
+import Empty from "@/components/Empty"
 
 ChartJS.register(
     ArcElement,
@@ -217,16 +218,9 @@ export default function Dashboard() {
                         </section>
                     </>)
                     :
-                    (<section className="flex flex-col items-center justify-center py-10">
-                        <img
-                            src="/imgs/empty.png"  // replace with your png path
-                            alt="No tasks"
-                            className="size-80 object-contain mb-4"
-                        />
-                        <p className="text-lg font-medium text-gray-600 dark:text-gray-300">
-                            No tasks found. Create your first one!
-                        </p>
-                    </section>)
+                    (
+                    <Empty />
+                    )
             }
         </main >
     )

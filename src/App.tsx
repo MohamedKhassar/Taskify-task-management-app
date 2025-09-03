@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { clearError, loadUserFromStorage } from "./slice/authSlice";
 import { useAppSelector } from "@/hooks/redux";
 import Trash from "./layout/Trash";
+import Completed from "./layout/Completed";
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -29,23 +30,23 @@ const App = () => {
           <>
             <Route element={<Login />} path="/login" />
             <Route element={<Register />} path="/register" />
-            <Route element={<Navigate to={"/login"}/>} path="/" />
+            <Route element={<Navigate to={"/login"} />} path="/" />
           </>
         )}
 
         {user && (
           <Route element={<ProtectedRoutes user={user} />}>
-            <Route element={<Navigate to={"/dashboard"}/>} path="/" />
+            <Route element={<Navigate to={"/dashboard"} />} path="/" />
             <Route element={<Navigate to={"/dashboard"} />} path="/login" />
             <Route element={<Navigate to={"/dashboard"} />} path="/register" />
             <Route path="/dashboard/*" element={<Layout />}>
               <Route index element={<Dashboard />} />
               <Route path="tasks">
-              <Route index element={<Tasks />} />
-              <Route path="completed" element={<h1>completed</h1>} />
-              <Route path="In-Progress" element={<h1>In Progress</h1>} />
-              <Route path="ToDo" element={<h1>To Do</h1>} />
-              <Route path="trash" element={<Trash />} />
+                <Route index element={<Tasks />} />
+                <Route path="completed" element={<Completed />} />
+                <Route path="In-Progress" element={<h1>In Progress</h1>} />
+                <Route path="ToDo" element={<h1>To Do</h1>} />
+                <Route path="trash" element={<Trash />} />
               </Route>
               <Route path="team" element={<h1>team</h1>} />
             </Route>

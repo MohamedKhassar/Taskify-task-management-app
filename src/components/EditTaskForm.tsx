@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/select"
 import { Priority, Status, type Task } from "@/utils/types"
 import { useAppDispatch, useAppSelector } from "@/hooks/redux"
-import { createTask, fetchTasks } from "@/slice/taskSlice"
+import {  EditTask, fetchTasks } from "@/slice/taskSlice"
 import { Bounce, toast, ToastContainer } from "react-toastify"
 import type { RootState } from "@/store"
 import { Loader2 } from "lucide-react"
@@ -30,7 +30,7 @@ const EditTaskForm = ({ close, task }: { close: () => void, task: Task }) => {
     const SaveTask = async (e: FormEvent) => {
         e.preventDefault()
         try {
-            const res = await dispatch(createTask(taskData)).unwrap(); // wait for backend response
+            const res = await dispatch(EditTask(taskData)).unwrap(); // wait for backend response
 
             toast.success(res.message, {
                 position: "top-right",
@@ -49,12 +49,23 @@ const EditTaskForm = ({ close, task }: { close: () => void, task: Task }) => {
                 description: "",
                 status: Status.Todo,
                 priority: Priority.Low,
-                createdAt: new Date(),
                 dueDate: undefined
             })
             await dispatch(fetchTasks()).unwrap()
             close()
         } catch (err) {
+            const error=err as string
+            toast.error(error, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Bounce,
+            });
             console.log(err)
         }
     }
@@ -153,8 +164,8 @@ const EditTaskForm = ({ close, task }: { close: () => void, task: Task }) => {
                     <Button type="button" variant="outline" onClick={close}>
                         Cancel
                     </Button>
-                    <Button disabled={loading} type="submit" className="bg-sky-600 text-white hover:bg-sky-700 disabled:cursor-not-allowed">
-                        {loading ? <Loader2 className="animate-spin" /> : "Save Task"}
+                    <Button disabled={loading} type="submit" className="bg-yellow-600 text-white hover:bg-yellow-700 disabled:cursor-not-allowed">
+                        {loading ? <Loader2 className="animate-spin" /> : "Edit Task"}
                     </Button>
                 </div>
             </motion.form>

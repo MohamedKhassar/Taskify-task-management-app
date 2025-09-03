@@ -11,7 +11,7 @@ import { List, Loader2, Table, Trash2Icon } from "lucide-react"
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 import CreateTaskForm from "@/components/CreateTaskForm"
-import { SoftDeleteTaskByIds, fetchTasks } from "@/slice/taskSlice"
+import { SoftDeleteTaskByIds } from "@/slice/taskSlice"
 import { Bounce, toast, ToastContainer } from "react-toastify"
 
 
@@ -57,7 +57,6 @@ const Tasks = () => {
                 SoftDeleteTaskByIds(ids ?? selectedItems) // ✅ if no ids passed, use selectedItems
             ).unwrap();
             toast.success(res.message);
-            await dispatch(fetchTasks())
             setSelectedItems([])
         } catch (error) {
             console.log(error)

@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/select"
 import { Priority, Status, type Task } from "@/utils/types"
 import { useAppDispatch, useAppSelector } from "@/hooks/redux"
-import { createTask, fetchTasks } from "@/slice/taskSlice"
+import { createTask } from "@/slice/taskSlice"
 import { Bounce, toast, ToastContainer } from "react-toastify"
 import type { RootState } from "@/store"
 import { Loader2 } from "lucide-react"
@@ -26,6 +26,7 @@ const CreateTaskForm = ({ close }: { close: () => void }) => {
     const { loading } = useAppSelector((state: RootState) => state.tasks)
     const dispatch = useAppDispatch()
     const [taskData, setTaskData] = useState<Task>({
+        // _id: "",
         title: "",
         description: "",
         status: Status.Todo,
@@ -59,7 +60,6 @@ const CreateTaskForm = ({ close }: { close: () => void }) => {
                 createdAt: new Date(),
                 dueDate: undefined
             })
-            await dispatch(fetchTasks()).unwrap()
             close()
         } catch (err) {
             console.log(err)
@@ -161,7 +161,7 @@ const CreateTaskForm = ({ close }: { close: () => void }) => {
                         Cancel
                     </Button>
                     <Button disabled={loading} type="submit" className="bg-sky-600 text-white hover:bg-sky-700 disabled:cursor-not-allowed">
-                        {loading?<Loader2 className="animate-spin" />:"Save Task"}
+                        {loading ? <Loader2 className="animate-spin" /> : "Save Task"}
                     </Button>
                 </div>
             </motion.form>

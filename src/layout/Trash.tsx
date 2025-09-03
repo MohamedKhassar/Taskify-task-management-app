@@ -10,7 +10,7 @@ import { type Task } from "@/utils/types"
 import { List, Loader2, Table, Trash2Icon, UndoDot } from "lucide-react"
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
-import { DeleteTaskByIds, fetchTasks } from "@/slice/taskSlice"
+import { DeleteTaskByIds } from "@/slice/taskSlice"
 import { Bounce, toast, ToastContainer } from "react-toastify"
 
 
@@ -62,7 +62,6 @@ const Trash = () => {
                 theme: "colored",
                 transition: Bounce,
             });
-            await dispatch(fetchTasks())
             setSelectedItems([])
         } catch (error) {
             console.log(error)

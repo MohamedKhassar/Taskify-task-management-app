@@ -153,7 +153,28 @@ export default function TaskTable({
 
                                 {/* Created At */}
                                 <TableCell className="text-center">
-                                    {new Date(task.createdAt).toLocaleDateString()}
+                                    {
+                                        (() => {
+                                            const created = new Date(task.createdAt!)
+                                            const today = new Date()
+                                            const yesterday = new Date()
+                                            yesterday.setDate(today.getDate() - 1)
+
+                                            // normalize times to only compare dates
+                                            const isSameDay = (d1: Date, d2: Date) =>
+                                                d1.getFullYear() === d2.getFullYear() &&
+                                                d1.getMonth() === d2.getMonth() &&
+                                                d1.getDate() === d2.getDate()
+
+                                            if (isSameDay(created, today)) {
+                                                return "Today"
+                                            } else if (isSameDay(created, yesterday)) {
+                                                return "Yesterday"
+                                            } else {
+                                                return created.toLocaleDateString()
+                                            }
+                                        })()
+                                    }
                                 </TableCell>
 
                                 {/* Actions */}

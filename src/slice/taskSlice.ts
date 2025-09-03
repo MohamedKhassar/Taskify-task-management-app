@@ -63,6 +63,30 @@ export const createTask = createAsyncThunk<
   }
 });
 
+// Update task by ids
+export const EditTask = createAsyncThunk<
+  { task: Task; message: string },
+  Partial<Task>
+>("tasks/EditTask", async (data, { rejectWithValue }) => {
+  try {
+    const token = Cookies.get("token");
+    const res = await axios.put(
+      `${import.meta.env.VITE_API_BASE_URL}/edit-task/${data._id}`,
+      data,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return res.data;
+  } catch (err) {
+    const error = err as AxiosError<ApiErrorResponse>;
+    const message =
+      error.response?.data.errors?.join(", ") ||
+      error.response?.data.message ||
+      "Network error";
+    return rejectWithValue(message);
+  }
+});
 // Soft Delete task by ids
 export const SoftDeleteTaskByIds = createAsyncThunk<
   { ids: string[]; message: string },
@@ -77,7 +101,7 @@ export const SoftDeleteTaskByIds = createAsyncThunk<
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    return res.data;
+    return { ids, message: res.data.message };
   } catch (err) {
     const error = err as AxiosError<ApiErrorResponse>;
     const message =
@@ -98,11 +122,11 @@ export const DeleteTaskByIds = createAsyncThunk<
     const res = await axios.delete(
       `${import.meta.env.VITE_API_BASE_URL}/delete`,
       {
-        data:ids,
+        data: ids,
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    return res.data;
+    return { ids, message: res.data.message };
   } catch (err) {
     const error = err as AxiosError<ApiErrorResponse>;
     const message =
@@ -140,12 +164,29 @@ const tasksSlice = createSlice({
       })
       .addCase(
         createTask.fulfilled,
+        (state, action: PayloadAction<{ message: string; task: Task }>) => {
+          state.loading = false;
+          state.message = action.payload.message;
+          state.tasks.push(action.payload.task);
+        }
+      )
+      .addCase(createTask.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      // Update task
+      .addCase(EditTask.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        EditTask.fulfilled,
         (state, action: PayloadAction<{ message: string }>) => {
           state.loading = false;
           state.message = action.payload.message;
         }
       )
-      .addCase(createTask.rejected, (state, action) => {
+      .addCase(EditTask.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
@@ -156,9 +197,12 @@ const tasksSlice = createSlice({
       })
       .addCase(
         SoftDeleteTaskByIds.fulfilled,
-        (state, action: PayloadAction<{ message: string }>) => {
+        (state, action: PayloadAction<{ message: string; ids: string[] }>) => {
           state.loading = false;
           state.message = action.payload.message;
+          state.tasks = state.tasks.filter(
+            (item) => !action.payload.ids.includes(item._id!)
+          );
         }
       )
       .addCase(SoftDeleteTaskByIds.rejected, (state, action) => {
@@ -172,9 +216,12 @@ const tasksSlice = createSlice({
       })
       .addCase(
         DeleteTaskByIds.fulfilled,
-        (state, action: PayloadAction<{ message: string }>) => {
+        (state, action: PayloadAction<{ message: string; ids: string[] }>) => {
           state.loading = false;
           state.message = action.payload.message;
+          state.tasks = state.tasks.filter(
+            (item) => !action.payload.ids.includes(item._id!)
+          );
         }
       )
       .addCase(DeleteTaskByIds.rejected, (state, action) => {

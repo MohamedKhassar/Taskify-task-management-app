@@ -55,7 +55,8 @@ export interface Task {
   dueDate: Date | undefined;
   tags?: string[];
   createdBy?: User;
-  createdAt: Date;
+  createdAt?: Date;
+  UpdatedAt?: Date;
   deletedAt?: Date;
 }
 

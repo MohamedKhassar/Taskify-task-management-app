@@ -1,11 +1,15 @@
+import { Status } from "@/utils/types";
 import {
   CheckCircle,
+  CheckCircle2,
   ClipboardList,
   LayoutDashboard,
   ListChecks,
+  ListTodo,
   Loader2,
   Trash2,
   Users,
+  type LucideProps,
 } from "lucide-react";
 import type { SidebarItem } from "./types";
 
@@ -85,4 +89,32 @@ export const taskColumns = [
   { key: "dueDate", label: "Due Date" },
   { key: "createdAt", label: "Created At" },
   { key: "actions", label: "Actions" },
+];
+
+export const COLUMNS: {
+  id: Status;
+  title: string;
+  Icon: React.ForwardRefExoticComponent<
+    Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
+  >;
+  className: string;
+}[] = [
+  {
+    id: Status.Todo,
+    title: "Todo",
+    Icon: ListTodo,
+    className: "bg-sky-50 dark:bg-sky-900/40 text-sky-800 dark:text-sky-300 shadow-sky-800/20",
+  },
+  {
+    id: Status.Inprogress,
+    title: "In Progress",
+    Icon: Loader2,
+    className: "bg-yellow-50 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300 shadow-yellow-800/20",
+  },
+  {
+    id: Status.Completed,
+    title: "Done",
+    Icon: CheckCircle2,
+    className: "bg-green-50 dark:bg-green-900/40 text-green-800 dark:text-green-300 shadow-green-800/20",
+  },
 ];

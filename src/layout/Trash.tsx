@@ -12,6 +12,7 @@ import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 import { DeleteTaskByIds, undoDeleteTaskByIds } from "@/slice/taskSlice"
 import { Bounce, toast, ToastContainer } from "react-toastify"
+import TaskBoard from "@/components/TaskBoard"
 
 
 const Trash = () => {
@@ -193,7 +194,8 @@ const Trash = () => {
                             </motion.div>
                         </>
                         :
-                        "list"
+                        <TaskBoard tasks={filteredTask
+                            .filter(task => task.deletedAt !== null)} />
                 }
             </section>
 

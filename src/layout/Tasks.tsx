@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils"
 import CreateTaskForm from "@/components/CreateTaskForm"
 import { SoftDeleteTaskByIds } from "@/slice/taskSlice"
 import { Bounce, toast, ToastContainer } from "react-toastify"
+import TaskBoard from "@/components/TaskBoard"
 
 
 const Tasks = () => {
@@ -22,7 +23,7 @@ const Tasks = () => {
     const [selectedItems, setSelectedItems] = useState<string[]>([])
     const [searchTitle, setSearchTitle] = useState("")
     const [filteredTask, setFilteredTask] = useState<Task[]>([])
-    const [viewType, setViewType] = useState<"table" | "list">("table")
+    const [viewType, setViewType] = useState<"table" | "list">("list")
     const [limit, setLimit] = useState({
         from: 0,
         to: 8
@@ -169,7 +170,8 @@ const Tasks = () => {
                             </motion.div>
                         </>
                         :
-                        "list"
+                        <TaskBoard tasks={filteredTask
+                            .filter(task => task.deletedAt == null)} />
                 }
             </section>
 

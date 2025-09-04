@@ -206,9 +206,13 @@ const tasksSlice = createSlice({
       })
       .addCase(
         EditTask.fulfilled,
-        (state, action: PayloadAction<{ message: string }>) => {
+        (state, action: PayloadAction<{ message: string,task:Task }>) => {
           state.loading = false;
           state.message = action.payload.message;
+          const index = state.tasks.findIndex((t) => t._id === action.payload.task._id)
+        if (index !== -1) {
+          state.tasks[index] = action.payload.task // update task with new status
+        }
         }
       )
       .addCase(EditTask.rejected, (state, action) => {

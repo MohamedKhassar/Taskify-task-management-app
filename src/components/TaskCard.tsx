@@ -1,19 +1,35 @@
 import { cn } from '@/lib/utils'
 import type { Task } from '@/utils/types'
+import { useDraggable } from '@dnd-kit/core'
 import { CalendarClock, PencilIcon } from 'lucide-react'
 
-const TaskCard = ({ task }: { task: Task }) => {
+const TaskCard = ({ task, isOverlay = false }: { task: Task, isOverlay?: boolean }) => {
+    const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+        id: task._id!,
+        disabled: isOverlay, // disable drag for overlay
+    })
+
+    const style = !isOverlay && transform
+        ? { transform: `translate(${transform.x}px, ${transform.y}px)` }
+        : undefined
+
     return (
-        <div className='dark:bg-body bg-white p-4 rounded-xl space-y-1'>
+        <div ref={setNodeRef}
+            {...listeners}
+            {...attributes}
+            style={style}
+            className={cn('dark:bg-body bg-white p-4 rounded-xl space-y-1 cursor-grab',
+                isDragging ? "opacity-50" : "", isOverlay ? "ring-4 ring-sky-200/30 cursor-grabbing" : ""
+            )}>
             <div className='flex items-center justify-between'>
                 <h4>{task.title}</h4>
                 <span className={cn(
                     "px-4 py-0.5 rounded-full text-xs capitalize",
                     task.priority === "high"
-                        ? "bg-red-800/90 text-red-100"
+                        ? "bg-red-100 text-red-800"
                         : task.priority === "medium"
-                            ? "bg-yellow-100 text-yellow-900"
-                            : "bg-green-100 text-green-900"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-green-100 text-green-800"
                 )}>{task.priority}</span>
             </div>
             <div className='max-w-80'>

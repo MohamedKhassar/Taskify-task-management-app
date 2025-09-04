@@ -49,7 +49,7 @@ export interface Task {
   _id?: string;
   title: string;
   description?: string;
-  status: Status;
+  status: Status|string;
   priority: Priority;
   assignedTo?: string;
   dueDate: Date | undefined;

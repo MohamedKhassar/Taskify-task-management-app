@@ -83,148 +83,137 @@ export default function TaskTable({
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {tasks.length > 0 ? (
-                        tasks.map((task) => (
-                            <TableRow
-                                key={task._id}
-                                data-state={selectedItems.includes(task._id!) && "selected"}
-                            >
-                                {/* checkbox */}
-                                <TableCell>
-                                    <Checkbox
-                                        checked={selectedItems.includes(task._id!)}
-                                        onCheckedChange={(checked) => {
-                                            setSelectedItems(prev =>
-                                                checked
-                                                    ? [...prev, task._id!]
-                                                    : prev.filter(id => id !== task._id)
-                                            );
-                                        }}
-                                        id={task._id} />
+                    {tasks.map((task) => (
+                        <TableRow
+                            key={task._id}
+                            data-state={selectedItems.includes(task._id!) && "selected"}
+                        >
+                            {/* checkbox */}
+                            <TableCell>
+                                <Checkbox
+                                    checked={selectedItems.includes(task._id!)}
+                                    onCheckedChange={(checked) => {
+                                        setSelectedItems(prev =>
+                                            checked
+                                                ? [...prev, task._id!]
+                                                : prev.filter(id => id !== task._id)
+                                        );
+                                    }}
+                                    id={task._id} />
 
-                                </TableCell>
-                                {/* Title */}
-                                <TableCell className="!text-center" align="center">
-                                    <Label htmlFor={task._id} className="!text-center">
-                                        {task.title}
-                                    </Label>
-                                </TableCell>
+                            </TableCell>
+                            {/* Title */}
+                            <TableCell className="!text-center" align="center">
+                                <Label htmlFor={task._id} className="!text-center">
+                                    {task.title}
+                                </Label>
+                            </TableCell>
 
-                                {/* Status */}
-                                <TableCell className="text-center">
-                                    <span
-                                        className={cn(
-                                            "px-3 py-1 rounded-full text-xs font-medium capitalize",
-                                            task.status === Status.Todo
-                                                ? "bg-sky-100 text-sky-900"
-                                                : task.status === Status.Inprogress
-                                                    ? "bg-yellow-100 text-yellow-900"
-                                                    : "bg-green-100 text-green-900"
-                                        )}
-                                    >
-                                        {task.status || "unknown"}
-                                    </span>
-                                </TableCell>
+                            {/* Status */}
+                            <TableCell className="text-center">
+                                <span
+                                    className={cn(
+                                        "px-3 py-1 rounded-full text-xs font-medium capitalize",
+                                        task.status === Status.Todo
+                                            ? "bg-sky-100 text-sky-900"
+                                            : task.status === Status.Inprogress
+                                                ? "bg-yellow-100 text-yellow-900"
+                                                : "bg-green-100 text-green-900"
+                                    )}
+                                >
+                                    {task.status || "unknown"}
+                                </span>
+                            </TableCell>
 
-                                {/* Priority */}
-                                <TableCell className="text-center">
-                                    <span
-                                        className={cn(
-                                            "px-3 py-1 rounded-full text-xs font-medium capitalize",
-                                            task.priority === "high"
-                                                ? "bg-red-800/90 text-red-100"
-                                                : task.priority === "medium"
-                                                    ? "bg-yellow-100 text-yellow-900"
-                                                    : "bg-green-100 text-green-900"
-                                        )}
-                                    >
-                                        {task.priority}
-                                    </span>
-                                </TableCell>
+                            {/* Priority */}
+                            <TableCell className="text-center">
+                                <span
+                                    className={cn(
+                                        "px-3 py-1 rounded-full text-xs font-medium capitalize",
+                                        task.priority === "high"
+                                            ? "bg-red-800/90 text-red-100"
+                                            : task.priority === "medium"
+                                                ? "bg-yellow-100 text-yellow-900"
+                                                : "bg-green-100 text-green-900"
+                                    )}
+                                >
+                                    {task.priority}
+                                </span>
+                            </TableCell>
 
-                                {/* Assigned To */}
-                                <TableCell className="text-center">
-                                    {task.assignedTo || "-"}
-                                </TableCell>
+                            {/* Assigned To */}
+                            <TableCell className="text-center">
+                                {task.assignedTo || "-"}
+                            </TableCell>
 
-                                {/* Due Date */}
-                                <TableCell className="text-center">
-                                    {task.dueDate
-                                        ? new Date(task.dueDate).toLocaleDateString()
-                                        : "No due date"}
-                                </TableCell>
+                            {/* Due Date */}
+                            <TableCell className="text-center">
+                                {task.dueDate
+                                    ? new Date(task.dueDate).toLocaleDateString()
+                                    : "No due date"}
+                            </TableCell>
 
-                                {/* Created At */}
-                                <TableCell className="text-center">
-                                    {
-                                        (() => {
-                                            const created = new Date(task.createdAt!)
-                                            const today = new Date()
-                                            const yesterday = new Date()
-                                            yesterday.setDate(today.getDate() - 1)
+                            {/* Created At */}
+                            <TableCell className="text-center">
+                                {
+                                    (() => {
+                                        const created = new Date(task.createdAt!)
+                                        const today = new Date()
+                                        const yesterday = new Date()
+                                        yesterday.setDate(today.getDate() - 1)
 
-                                            // normalize times to only compare dates
-                                            const isSameDay = (d1: Date, d2: Date) =>
-                                                d1.getFullYear() === d2.getFullYear() &&
-                                                d1.getMonth() === d2.getMonth() &&
-                                                d1.getDate() === d2.getDate()
+                                        // normalize times to only compare dates
+                                        const isSameDay = (d1: Date, d2: Date) =>
+                                            d1.getFullYear() === d2.getFullYear() &&
+                                            d1.getMonth() === d2.getMonth() &&
+                                            d1.getDate() === d2.getDate()
 
-                                            if (isSameDay(created, today)) {
-                                                return "Today"
-                                            } else if (isSameDay(created, yesterday)) {
-                                                return "Yesterday"
-                                            } else {
-                                                return created.toLocaleDateString()
-                                            }
-                                        })()
-                                    }
-                                </TableCell>
+                                        if (isSameDay(created, today)) {
+                                            return "Today"
+                                        } else if (isSameDay(created, yesterday)) {
+                                            return "Yesterday"
+                                        } else {
+                                            return created.toLocaleDateString()
+                                        }
+                                    })()
+                                }
+                            </TableCell>
 
-                                {/* Actions */}
-                                <TableCell className="flex flex-wrap gap-2 justify-center">
-                                    {mode == "task" ?
-                                        <Button
-                                            className="hover:bg-yellow-600 dark:text-yellow-50 text-yellow-100 bg-yellow-500 cursor-pointer lg:w-fit w-full"
-                                            size={"sm"}
-                                            onClick={() => ShowEditForm(task)}
-                                        >
-                                            <Pencil className="size-4 fill-amber-50" /> Edit
-                                        </Button>
-                                        :
-                                        <Button
-                                            className="hover:bg-yellow-600 dark:text-yellow-50 text-yellow-100 bg-yellow-500 cursor-pointer lg:!w-fit !w-full"
-                                            size={"sm"}
-                                            onClick={() => undoDelete!([task._id!])}
-                                        >
-                                            {loading ? <Loader2 className="animate-spin" /> :
-                                                <UndoDot className="size-4" />
-                                            }
-                                        </Button>
-                                    }
+                            {/* Actions */}
+                            <TableCell className="flex flex-wrap gap-2 justify-center">
+                                {mode == "task" ?
                                     <Button
-                                        onClick={() => onDelete([task._id!])}
-                                        variant={"destructive"}
+                                        className="hover:bg-yellow-600 dark:text-yellow-50 text-yellow-100 bg-yellow-500 cursor-pointer lg:w-fit w-full"
                                         size={"sm"}
-                                        className="lg:w-fit w-full"
+                                        onClick={() => ShowEditForm(task)}
                                     >
-                                        {!loading ? <>
-                                            <Trash2 className="size-4" /> Delete
-                                        </> : <Loader2 className="animate-spin" />}
+                                        <Pencil className="size-4 fill-amber-50" /> Edit
                                     </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))
-                    ) : (
-                        <TableRow>
-                            <TableCell
-                                className="dark:text-red-400 py-5 text-lg text-center"
-                                align="center"
-                                colSpan={7}
-                            >
-                                No tasks found
+                                    :
+                                    <Button
+                                        className="hover:bg-yellow-600 dark:text-yellow-50 text-yellow-100 bg-yellow-500 cursor-pointer lg:!w-fit !w-full"
+                                        size={"sm"}
+                                        onClick={() => undoDelete!([task._id!])}
+                                    >
+                                        {loading ? <Loader2 className="animate-spin" /> :
+                                            <UndoDot className="size-4" />
+                                        }
+                                    </Button>
+                                }
+                                <Button
+                                    onClick={() => onDelete([task._id!])}
+                                    variant={"destructive"}
+                                    size={"sm"}
+                                    className="lg:w-fit w-full"
+                                >
+                                    {!loading ? <>
+                                        <Trash2 className="size-4" /> Delete
+                                    </> : <Loader2 className="animate-spin" />}
+                                </Button>
                             </TableCell>
                         </TableRow>
-                    )}
+                    ))
+                    }
                 </TableBody>
             </Table>
         </motion.div>

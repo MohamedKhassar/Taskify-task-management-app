@@ -14,6 +14,7 @@ import CreateTaskForm from "@/components/CreateTaskForm"
 import { SoftDeleteTaskByIds } from "@/slice/taskSlice"
 import { Bounce, toast, ToastContainer } from "react-toastify"
 import TaskBoard from "@/components/TaskBoard"
+import Empty from "@/components/Empty"
 
 
 const Tasks = () => {
@@ -64,7 +65,6 @@ const Tasks = () => {
         }
     }
 
-    console.log(filteredTask.filter(item => item.deletedAt == null))
     return (
         <main
 
@@ -131,7 +131,7 @@ const Tasks = () => {
                             "bg-sky-800 text-sky-100 hover:bg-sky-900" : "bg-sky-100 hover:bg-sky-200 text-sky-900")}><List /></Button>
                 </motion.div>
                 <DropdownMenuSeparator className="bg-sky-700 dark:bg-sky-600" />
-                {
+                {filteredTask.filter(task => task.deletedAt == null).length > 0 ?
                     viewType == "table" ?
                         <>
                             <TaskTable onDelete={softDeleteTasks} selectedItems={selectedItems} setSelectedItems={setSelectedItems} tasks={filteredTask
@@ -172,6 +172,8 @@ const Tasks = () => {
                         :
                         <TaskBoard tasks={filteredTask
                             .filter(task => task.deletedAt == null)} />
+                    :
+                    <Empty />
                 }
             </section>
 

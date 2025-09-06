@@ -171,7 +171,9 @@ const Tasks = () => {
                         </>
                         :
                         <TaskBoard tasks={filteredTask
-                            .filter(task => task.deletedAt == null)} />
+                            .filter(task => task.deletedAt == null)
+                            .sort((a, b) => new Date(b.updatedAt!).getTime() - new Date(a.updatedAt!).getTime())
+                        } />
                     :
                     <Empty />
                 }

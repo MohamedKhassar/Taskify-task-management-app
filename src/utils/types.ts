@@ -56,7 +56,7 @@ export interface Task {
   tags?: string[];
   createdBy?: User;
   createdAt?: Date;
-  UpdatedAt?: Date;
+  updatedAt?: Date;
   deletedAt?: Date;
 }
 

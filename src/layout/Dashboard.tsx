@@ -74,11 +74,11 @@ export default function Dashboard() {
     };
 
     const tasksOverTime = data.reduce<Record<string, number>>((acc, task) => {
-        const day = new Date(task.createdAt!).toLocaleDateString("en-US", { weekday: "short" });
+        const day = new Date(task.updatedAt!).toLocaleDateString("en-US", { weekday: "long" });
+        console.log(task.updatedAt!)
         acc[day] = (acc[day] || 0) + (task.status === "completed" ? 1 : 0);
         return acc;
     }, {});
-
     const lineData = {
         labels: Object.keys(tasksOverTime),
         datasets: [
